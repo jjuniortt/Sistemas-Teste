@@ -1,9 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { autenticar, sessaoAtual, USUARIO_DEMO } from "@/lib/cadastro-store";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -19,6 +23,8 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Acesso ao sistema de parametrização da estrutura assistencial hospitalar.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Login,
@@ -26,24 +32,49 @@ export const Route = createFileRoute("/")({
 
 function Login() {
   const navigate = useNavigate();
-  const [usuario, setUsuario] = useState("");
+  const { user, carregando } = useAuth();
+  const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState<string | null>(null);
+  const [nome, setNome] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
   useEffect(() => {
-    if (sessaoAtual()) navigate({ to: "/cadastro" });
-  }, [navigate]);
+    if (!carregando && user) navigate({ to: "/cadastro" });
+  }, [carregando, user, navigate]);
 
-  const enviar = (e: React.FormEvent) => {
+  const entrar = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!usuario.trim() || !senha) {
-      setErro("Informe usuário e senha.");
+    setEnviando(true);
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: senha });
+    setEnviando(false);
+    if (error) return toast.error("Não foi possível entrar: " + error.message);
+    navigate({ to: "/cadastro" });
+  };
+
+  const cadastrar = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (senha.length < 6) return toast.error("A senha deve ter no mínimo 6 caracteres.");
+    setEnviando(true);
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password: senha,
+      options: { emailRedirectTo: window.location.origin, data: { nome: nome.trim() } },
+    });
+    setEnviando(false);
+    if (error) return toast.error("Não foi possível criar a conta: " + error.message);
+    if (!data.session) {
+      toast.success("Conta criada. Confirme o e-mail enviado para concluir o acesso.");
       return;
     }
-    if (!autenticar(usuario, senha)) {
-      setErro("Credenciais inválidas.");
-      return;
-    }
+    navigate({ to: "/cadastro" });
+  };
+
+  const entrarComGoogle = async () => {
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin,
+    });
+    if (result.error) return toast.error("Falha no login com Google.");
+    if (result.redirected) return;
     navigate({ to: "/cadastro" });
   };
 
@@ -58,8 +89,8 @@ function Login() {
             Estrutura física e fluxo assistencial em um único cadastro
           </h1>
           <p className="max-w-md text-base opacity-80">
-            Emergência, internação, UTIs e UCIs organizados conforme a solicitação de
-            informações para parametrização do sistema.
+            Emergência, internação, UTIs e UCIs organizados conforme a solicitação de informações
+            para parametrização do sistema.
           </p>
         </div>
         <div className="flex gap-8 text-sm opacity-80">
@@ -70,48 +101,104 @@ function Login() {
       </section>
 
       <section className="flex items-center justify-center p-6">
-        <form onSubmit={enviar} className="w-full max-w-sm space-y-6">
+        <div className="w-full max-w-sm space-y-6">
           <header className="space-y-2">
             <h2 className="text-2xl font-semibold">Acessar o sistema</h2>
             <p className="text-sm text-muted-foreground">
-              Use as credenciais de demonstração para entrar.
+              Entre com sua conta para carregar sua parametrização salva.
             </p>
           </header>
 
-          <div className="space-y-2">
-            <Label htmlFor="usuario">Usuário</Label>
-            <Input
-              id="usuario"
-              value={usuario}
-              autoComplete="username"
-              onChange={(e) => setUsuario(e.target.value)}
-              placeholder="admin"
-            />
+          <Tabs defaultValue="entrar">
+            <TabsList className="w-full">
+              <TabsTrigger value="entrar" className="flex-1">
+                Entrar
+              </TabsTrigger>
+              <TabsTrigger value="criar" className="flex-1">
+                Criar conta
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="entrar">
+              <form onSubmit={entrar} className="space-y-4 pt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">E-mail</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="senha">Senha</Label>
+                  <Input
+                    id="senha"
+                    type="password"
+                    required
+                    autoComplete="current-password"
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={enviando}>
+                  Entrar
+                </Button>
+              </form>
+            </TabsContent>
+
+            <TabsContent value="criar">
+              <form onSubmit={cadastrar} className="space-y-4 pt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="nome">Nome</Label>
+                  <Input
+                    id="nome"
+                    value={nome}
+                    autoComplete="name"
+                    onChange={(e) => setNome(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email-novo">E-mail</Label>
+                  <Input
+                    id="email-novo"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="senha-nova">Senha</Label>
+                  <Input
+                    id="senha-nova"
+                    type="password"
+                    required
+                    autoComplete="new-password"
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={enviando}>
+                  Criar conta
+                </Button>
+              </form>
+            </TabsContent>
+          </Tabs>
+
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="h-px flex-1 bg-border" />
+            ou
+            <span className="h-px flex-1 bg-border" />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="senha">Senha</Label>
-            <Input
-              id="senha"
-              type="password"
-              value={senha}
-              autoComplete="current-password"
-              onChange={(e) => setSenha(e.target.value)}
-              placeholder="••••••••"
-            />
-          </div>
-
-          {erro && <p className="text-sm text-destructive">{erro}</p>}
-
-          <Button type="submit" className="w-full">
-            Entrar
+          <Button variant="outline" className="w-full" onClick={entrarComGoogle}>
+            Continuar com Google
           </Button>
-
-          <p className="rounded-md bg-muted p-3 text-xs text-muted-foreground">
-            Demonstração — usuário <strong>{USUARIO_DEMO.usuario}</strong> / senha{" "}
-            <strong>{USUARIO_DEMO.senha}</strong>. Autenticação estática, sem backend.
-          </p>
-        </form>
+        </div>
       </section>
     </main>
   );
