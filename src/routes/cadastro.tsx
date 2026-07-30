@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,14 +15,13 @@ import {
 } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import {
   AREAS_EMERGENCIA,
   PERFIS_UNIDADE_CRITICA,
-  cadastroInicial,
-  encerrarSessao,
+  cadastroVazio,
   leitosDoSetor,
-  novoId,
-  sessaoAtual,
   totalGeralLeitos,
   totalLeitosCriticos,
   totalLeitosEmergencia,
@@ -32,6 +31,15 @@ import {
   type PerfilUnidadeCritica,
   type TipoUnidadeCritica,
 } from "@/lib/cadastro-store";
+import {
+  carregarCadastro,
+  inserirArea,
+  inserirEspecialidade,
+  inserirSetor,
+  inserirUnidadeCritica,
+  removerRegistro,
+} from "@/lib/cadastro-db";
+import { exportarCSV, exportarJSON } from "@/lib/exportar";
 
 export const Route = createFileRoute("/cadastro")({
   head: () => ({
@@ -47,6 +55,8 @@ export const Route = createFileRoute("/cadastro")({
         property: "og:description",
         content: "Emergência, internação, UTIs e UCIs em um cadastro único e organizado.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: CadastroPage,
@@ -67,13 +77,26 @@ const numero = (v: string) => Math.max(0, Math.floor(Number(v) || 0));
 
 function CadastroPage() {
   const navigate = useNavigate();
-  const [autorizado, setAutorizado] = useState(false);
-  const [dados, setDados] = useState<Cadastro>(cadastroInicial);
+  const { user, carregando: carregandoSessao } = useAuth();
+  const [dados, setDados] = useState<Cadastro>(cadastroVazio);
+  const [carregandoDados, setCarregandoDados] = useState(true);
 
   useEffect(() => {
-    if (!sessaoAtual()) navigate({ to: "/" });
-    else setAutorizado(true);
-  }, [navigate]);
+    if (!carregandoSessao && !user) navigate({ to: "/" });
+  }, [carregandoSessao, user, navigate]);
+
+  useEffect(() => {
+    if (!user) return;
+    let ativo = true;
+    setCarregandoDados(true);
+    carregarCadastro(user.id)
+      .then((c) => ativo && setDados(c))
+      .catch(() => toast.error("Não foi possível carregar sua parametrização."))
+      .finally(() => ativo && setCarregandoDados(false));
+    return () => {
+      ativo = false;
+    };
+  }, [user]);
 
   // Emergência
   const [esp, setEsp] = useState({ nome: "", observacao: "" });
@@ -103,95 +126,131 @@ function CadastroPage() {
     [dados],
   );
 
-  if (!autorizado) return null;
-
-  const sair = () => {
-    encerrarSessao();
+  const sair = useCallback(async () => {
+    await supabase.auth.signOut();
     navigate({ to: "/" });
-  };
+  }, [navigate]);
 
-  const addEspecialidade = () => {
+  if (carregandoSessao || !user) return null;
+
+  const addEspecialidade = async () => {
     const nome = esp.nome.trim();
     if (nome.length < 3) return toast.error("Informe a especialidade (mínimo 3 caracteres).");
     if (dados.especialidades.some((e) => e.nome.toLowerCase() === nome.toLowerCase()))
       return toast.error("Especialidade já cadastrada.");
-    setDados((d) => ({
-      ...d,
-      especialidades: [
-        ...d.especialidades,
-        { id: novoId("esp"), nome, observacao: esp.observacao.trim() || undefined },
-      ],
-    }));
-    setEsp({ nome: "", observacao: "" });
-    toast.success("Especialidade adicionada.");
+    try {
+      const criada = await inserirEspecialidade(user.id, {
+        nome,
+        observacao: esp.observacao.trim() || null,
+      });
+      setDados((d) => ({ ...d, especialidades: [...d.especialidades, criada] }));
+      setEsp({ nome: "", observacao: "" });
+      toast.success("Especialidade salva.");
+    } catch {
+      toast.error("Erro ao salvar a especialidade.");
+    }
   };
 
-  const addArea = () => {
+  const addArea = async () => {
     const leitos = numero(area.leitos);
     if (leitos < 1) return toast.error("Quantitativo de leitos deve ser maior que zero.");
     if (area.tipo === "Outra área assistencial" && area.descricao.trim().length < 3)
       return toast.error("Descreva a área assistencial.");
-    setDados((d) => ({
-      ...d,
-      areasEmergencia: [
-        ...d.areasEmergencia,
-        { id: novoId("ae"), tipo: area.tipo, descricao: area.descricao.trim(), leitos },
-      ],
-    }));
-    setArea({ tipo: "Área Verde", descricao: "", leitos: "" });
-    toast.success("Área da emergência adicionada.");
+    try {
+      const criada = await inserirArea(user.id, {
+        tipo: area.tipo,
+        descricao: area.descricao.trim(),
+        leitos,
+      });
+      setDados((d) => ({ ...d, areasEmergencia: [...d.areasEmergencia, criada] }));
+      setArea({ tipo: "Área Verde", descricao: "", leitos: "" });
+      toast.success("Área da emergência salva.");
+    } catch {
+      toast.error("Erro ao salvar a área.");
+    }
   };
 
-  const addSetor = () => {
+  const addSetor = async () => {
     const quartos = numero(setor.quartos);
     const lpq = numero(setor.leitosPorQuarto);
     if (setor.nome.trim().length < 3) return toast.error("Informe o nome do setor/unidade.");
     if (quartos < 1) return toast.error("Quantitativo de quartos deve ser maior que zero.");
     if (lpq < 1) return toast.error("Leitos por quarto deve ser maior que zero.");
-    setDados((d) => ({
-      ...d,
-      setoresInternacao: [
-        ...d.setoresInternacao,
-        { id: novoId("si"), nome: setor.nome.trim(), quartos, leitosPorQuarto: lpq },
-      ],
-    }));
-    setSetor({ nome: "", quartos: "", leitosPorQuarto: "" });
-    toast.success("Setor de internação adicionado.");
+    try {
+      const criado = await inserirSetor(user.id, {
+        nome: setor.nome.trim(),
+        quartos,
+        leitosPorQuarto: lpq,
+      });
+      setDados((d) => ({ ...d, setoresInternacao: [...d.setoresInternacao, criado] }));
+      setSetor({ nome: "", quartos: "", leitosPorQuarto: "" });
+      toast.success("Setor de internação salvo.");
+    } catch {
+      toast.error("Erro ao salvar o setor.");
+    }
   };
 
-  const addUnidadeCritica = () => {
+  const addUnidadeCritica = async () => {
     const leitos = numero(uc.leitos);
     if (uc.nome.trim().length < 3) return toast.error("Informe a identificação da unidade.");
     if (leitos < 1) return toast.error("Quantitativo de leitos deve ser maior que zero.");
-    setDados((d) => ({
-      ...d,
-      unidadesCriticas: [
-        ...d.unidadesCriticas,
-        { id: novoId("uc"), tipo: uc.tipo, perfil: uc.perfil, nome: uc.nome.trim(), leitos },
-      ],
-    }));
-    setUc({ tipo: "UTI", perfil: "Adulto", nome: "", leitos: "" });
-    toast.success("Unidade adicionada.");
+    try {
+      const criada = await inserirUnidadeCritica(user.id, {
+        tipo: uc.tipo,
+        perfil: uc.perfil,
+        nome: uc.nome.trim(),
+        leitos,
+      });
+      setDados((d) => ({ ...d, unidadesCriticas: [...d.unidadesCriticas, criada] }));
+      setUc({ tipo: "UTI", perfil: "Adulto", nome: "", leitos: "" });
+      toast.success("Unidade salva.");
+    } catch {
+      toast.error("Erro ao salvar a unidade.");
+    }
   };
 
-  const remover = <K extends keyof Cadastro>(chave: K, id: string) =>
-    setDados((d) => ({ ...d, [chave]: (d[chave] as { id: string }[]).filter((i) => i.id !== id) }) as Cadastro);
+  const remover = async (chave: keyof Cadastro, id: string) => {
+    try {
+      await removerRegistro(chave, id);
+      setDados(
+        (d) =>
+          ({ ...d, [chave]: (d[chave] as { id: string }[]).filter((i) => i.id !== id) }) as Cadastro,
+      );
+      toast.success("Registro removido.");
+    } catch {
+      toast.error("Erro ao remover o registro.");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div>
             <h1 className="text-lg font-semibold">Cadastro da Estrutura Assistencial</h1>
             <p className="text-sm text-muted-foreground">
-              Parametrização da unidade hospitalar — emergência, internação, UTI e UCI
+              {user.email} — emergência, internação, UTI e UCI
             </p>
           </div>
-          <Button variant="outline" onClick={sair}>
-            Sair
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" onClick={() => exportarCSV(dados)}>
+              Exportar CSV
+            </Button>
+            <Button variant="outline" onClick={() => exportarJSON(dados)}>
+              Exportar JSON
+            </Button>
+            <Button variant="outline" onClick={sair}>
+              Sair
+            </Button>
+          </div>
         </div>
       </header>
+
+      {carregandoDados && (
+        <p className="mx-auto max-w-6xl px-6 pt-6 text-sm text-muted-foreground">
+          Carregando parametrização salva…
+        </p>
+      )}
 
       <main className="mx-auto max-w-6xl space-y-8 px-6 py-8">
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
