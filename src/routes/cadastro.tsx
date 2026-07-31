@@ -281,7 +281,7 @@ function CadastroPage() {
 
           {/* ---------------- Emergência ---------------- */}
           <TabsContent value="emergencia" className="space-y-6 pt-6">
-            <CardsEmergencia dados={dados} />
+            
             <Card>
               <CardHeader>
                 <CardTitle>Especialidades atendidas na emergência</CardTitle>
