@@ -136,9 +136,15 @@ function CadastroPage() {
 
   useEffect(() => {
     if (carregandoSessao) return;
-    if (!user) return navigate({ to: "/" });
+    if (!user) {
+      navigate({ to: "/" });
+      return;
+    }
     const ativa = obterEmpresaAtiva();
-    if (!ativa) return navigate({ to: "/" });
+    if (!ativa) {
+      navigate({ to: "/" });
+      return;
+    }
     setEmpresa(ativa);
   }, [carregandoSessao, user, navigate]);
 
