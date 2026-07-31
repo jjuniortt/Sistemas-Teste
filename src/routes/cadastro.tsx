@@ -132,23 +132,34 @@ function CadastroPage() {
   const { user, carregando: carregandoSessao } = useAuth();
   const [dados, setDados] = useState<Cadastro>(cadastroVazio);
   const [carregandoDados, setCarregandoDados] = useState(true);
+  const [empresa, setEmpresa] = useState<EmpresaCodigo | null>(null);
 
   useEffect(() => {
-    if (!carregandoSessao && !user) navigate({ to: "/" });
+    if (carregandoSessao) return;
+    if (!user) return navigate({ to: "/" });
+    const ativa = obterEmpresaAtiva();
+    if (!ativa) return navigate({ to: "/" });
+    setEmpresa(ativa);
   }, [carregandoSessao, user, navigate]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !empresa) return;
     let ativo = true;
     setCarregandoDados(true);
-    carregarCadastro(user.id)
+    carregarCadastro(user.id, empresa)
       .then((c) => ativo && setDados(c))
       .catch(() => toast.error("Não foi possível carregar sua parametrização."))
       .finally(() => ativo && setCarregandoDados(false));
     return () => {
       ativo = false;
     };
-  }, [user]);
+  }, [user, empresa]);
+
+  const trocarEmpresa = (codigo: EmpresaCodigo) => {
+    definirEmpresaAtiva(codigo);
+    setDados(cadastroVazio);
+    setEmpresa(codigo);
+  };
 
   // Emergência
   const [esp, setEsp] = useState({ nome: "", observacao: "" });
