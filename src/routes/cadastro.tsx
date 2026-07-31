@@ -167,6 +167,34 @@ function CadastroPage() {
     leitos: string;
   }>({ tipo: "UTI", perfil: "Adulto", nome: "", leitos: "" });
 
+  // Edição inline
+  const [edEsp, setEdEsp] = useState<{ id: string; nome: string; observacao: string } | null>(null);
+  const [edArea, setEdArea] = useState<{
+    id: string;
+    tipo: AreaEmergenciaTipo;
+    descricao: string;
+    leitos: string;
+  } | null>(null);
+  const [edSetor, setEdSetor] = useState<{
+    id: string;
+    nome: string;
+    quartos: string;
+    leitosPorQuarto: string;
+  } | null>(null);
+  const [edUc, setEdUc] = useState<{
+    id: string;
+    tipo: TipoUnidadeCritica;
+    perfil: PerfilUnidadeCritica;
+    nome: string;
+    leitos: string;
+  } | null>(null);
+
+  const unidadesFiltradas = useMemo(
+    () => dados.unidadesCriticas.filter((u) => u.tipo === uc.tipo),
+    [dados.unidadesCriticas, uc.tipo],
+  );
+
+
   const totais = useMemo(
     () => ({
       emergencia: totalLeitosEmergencia(dados),
