@@ -240,7 +240,17 @@ function CadastroPage() {
             <Button variant="outline" onClick={() => exportarJSON(dados)}>
               Exportar JSON
             </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (!exportarPDF(dados, user.email ?? undefined))
+                  toast.error("Permita pop-ups para visualizar o PDF.");
+              }}
+            >
+              Exportar PDF
+            </Button>
             <Button variant="outline" onClick={sair}>
+
               Sair
             </Button>
           </div>
