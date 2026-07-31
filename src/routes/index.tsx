@@ -10,6 +10,9 @@ import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" && s.next.startsWith("/") && !s.next.startsWith("//") ? s.next : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Login | Cadastro de Estrutura Assistencial" },
@@ -32,6 +35,14 @@ export const Route = createFileRoute("/")({
 
 function Login() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
+  const irParaDestino = () => {
+    if (next) {
+      window.location.href = next;
+      return;
+    }
+    navigate({ to: "/cadastro" });
+  };
   const { user, carregando } = useAuth();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -39,8 +50,9 @@ function Login() {
   const [enviando, setEnviando] = useState(false);
 
   useEffect(() => {
-    if (!carregando && user) navigate({ to: "/cadastro" });
-  }, [carregando, user, navigate]);
+    if (!carregando && user) irParaDestino();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [carregando, user, next]);
 
   const entrar = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +60,7 @@ function Login() {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: senha });
     setEnviando(false);
     if (error) return toast.error("Não foi possível entrar: " + error.message);
-    navigate({ to: "/cadastro" });
+    irParaDestino();
   };
 
   const cadastrar = async (e: React.FormEvent) => {
@@ -58,7 +70,7 @@ function Login() {
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password: senha,
-      options: { emailRedirectTo: window.location.origin, data: { nome: nome.trim() } },
+      options: { emailRedirectTo: window.location.origin + (next ?? ""), data: { nome: nome.trim() } },
     });
     setEnviando(false);
     if (error) return toast.error("Não foi possível criar a conta: " + error.message);
@@ -66,16 +78,16 @@ function Login() {
       toast.success("Conta criada. Confirme o e-mail enviado para concluir o acesso.");
       return;
     }
-    navigate({ to: "/cadastro" });
+    irParaDestino();
   };
 
   const entrarComGoogle = async () => {
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: window.location.origin + (next ?? ""),
     });
     if (result.error) return toast.error("Falha no login com Google.");
     if (result.redirected) return;
-    navigate({ to: "/cadastro" });
+    irParaDestino();
   };
 
   return (
