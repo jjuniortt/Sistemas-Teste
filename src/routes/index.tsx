@@ -140,12 +140,20 @@ function Login() {
 
       <section className="flex items-center justify-center p-6">
         <div className="w-full max-w-sm space-y-6">
-          <header className="space-y-2">
+          <div className="flex justify-center">
+            <img
+              src={logoAghUse.url}
+              alt="AGHUse — Secretaria de Estado da Saúde, Governo da Paraíba"
+              className="h-20 w-auto"
+            />
+          </div>
+          <header className="space-y-2 text-center">
             <h2 className="text-2xl font-semibold">Acessar o sistema</h2>
             <p className="text-sm text-muted-foreground">
               Entre com sua conta para carregar sua parametrização salva.
             </p>
           </header>
+
 
           <div className="space-y-2">
             <Label htmlFor="empresa">Empresa (hospital) *</Label>
