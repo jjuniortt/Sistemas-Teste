@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { EmpresaCodigo } from "./empresas";
 import type {
   AreaEmergencia,
   AreaEmergenciaTipo,
@@ -10,27 +11,34 @@ import type {
   UnidadeCritica,
 } from "./cadastro-store";
 
-export async function carregarCadastro(userId: string): Promise<Cadastro> {
+export async function carregarCadastro(
+  userId: string,
+  empresa: EmpresaCodigo,
+): Promise<Cadastro> {
   const [esp, areas, setores, unidades] = await Promise.all([
     supabase
       .from("especialidades")
       .select("*")
       .eq("user_id", userId)
+      .eq("empresa", empresa)
       .order("created_at", { ascending: true }),
     supabase
       .from("areas_emergencia")
       .select("*")
       .eq("user_id", userId)
+      .eq("empresa", empresa)
       .order("created_at", { ascending: true }),
     supabase
       .from("setores_internacao")
       .select("*")
       .eq("user_id", userId)
+      .eq("empresa", empresa)
       .order("created_at", { ascending: true }),
     supabase
       .from("unidades_criticas")
       .select("*")
       .eq("user_id", userId)
+      .eq("empresa", empresa)
       .order("created_at", { ascending: true }),
   ]);
 
@@ -67,11 +75,12 @@ export async function carregarCadastro(userId: string): Promise<Cadastro> {
 
 export async function inserirEspecialidade(
   userId: string,
+  empresa: EmpresaCodigo,
   dados: Omit<Especialidade, "id">,
 ): Promise<Especialidade> {
   const { data, error } = await supabase
     .from("especialidades")
-    .insert({ user_id: userId, nome: dados.nome, observacao: dados.observacao ?? null })
+    .insert({ user_id: userId, empresa, nome: dados.nome, observacao: dados.observacao ?? null })
     .select()
     .single();
   if (error) throw error;
@@ -80,11 +89,12 @@ export async function inserirEspecialidade(
 
 export async function inserirArea(
   userId: string,
+  empresa: EmpresaCodigo,
   dados: Omit<AreaEmergencia, "id">,
 ): Promise<AreaEmergencia> {
   const { data, error } = await supabase
     .from("areas_emergencia")
-    .insert({ user_id: userId, ...dados })
+    .insert({ user_id: userId, empresa, ...dados })
     .select()
     .single();
   if (error) throw error;
@@ -98,12 +108,14 @@ export async function inserirArea(
 
 export async function inserirSetor(
   userId: string,
+  empresa: EmpresaCodigo,
   dados: Omit<SetorInternacao, "id">,
 ): Promise<SetorInternacao> {
   const { data, error } = await supabase
     .from("setores_internacao")
     .insert({
       user_id: userId,
+      empresa,
       nome: dados.nome,
       quartos: dados.quartos,
       leitos_por_quarto: dados.leitosPorQuarto,
@@ -121,11 +133,12 @@ export async function inserirSetor(
 
 export async function inserirUnidadeCritica(
   userId: string,
+  empresa: EmpresaCodigo,
   dados: Omit<UnidadeCritica, "id">,
 ): Promise<UnidadeCritica> {
   const { data, error } = await supabase
     .from("unidades_criticas")
-    .insert({ user_id: userId, ...dados })
+    .insert({ user_id: userId, empresa, ...dados })
     .select()
     .single();
   if (error) throw error;

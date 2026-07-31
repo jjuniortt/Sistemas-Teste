@@ -8,6 +8,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/hooks/use-auth";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  EMPRESAS,
+  definirEmpresaAtiva,
+  obterEmpresaAtiva,
+  type EmpresaCodigo,
+} from "@/lib/empresas";
 
 export const Route = createFileRoute("/")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -48,14 +61,25 @@ function Login() {
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const [empresa, setEmpresa] = useState<EmpresaCodigo | "">(() => obterEmpresaAtiva() ?? "");
+
+  const validarEmpresa = () => {
+    if (!empresa) {
+      toast.error("Selecione a empresa (hospital) para continuar.");
+      return false;
+    }
+    definirEmpresaAtiva(empresa);
+    return true;
+  };
 
   useEffect(() => {
-    if (!carregando && user) irParaDestino();
+    if (!carregando && user && obterEmpresaAtiva()) irParaDestino();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [carregando, user, next]);
 
   const entrar = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validarEmpresa()) return;
     setEnviando(true);
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: senha });
     setEnviando(false);
@@ -65,6 +89,7 @@ function Login() {
 
   const cadastrar = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validarEmpresa()) return;
     if (senha.length < 6) return toast.error("A senha deve ter no mínimo 6 caracteres.");
     setEnviando(true);
     const { data, error } = await supabase.auth.signUp({
@@ -82,6 +107,7 @@ function Login() {
   };
 
   const entrarComGoogle = async () => {
+    if (!validarEmpresa()) return;
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin + (next ?? ""),
     });
@@ -120,6 +146,25 @@ function Login() {
               Entre com sua conta para carregar sua parametrização salva.
             </p>
           </header>
+
+          <div className="space-y-2">
+            <Label htmlFor="empresa">Empresa (hospital) *</Label>
+            <Select value={empresa} onValueChange={(v) => setEmpresa(v as EmpresaCodigo)}>
+              <SelectTrigger id="empresa">
+                <SelectValue placeholder="Selecione o hospital" />
+              </SelectTrigger>
+              <SelectContent>
+                {EMPRESAS.map((e) => (
+                  <SelectItem key={e.codigo} value={e.codigo}>
+                    {e.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Os dados cadastrados ficam isolados por hospital.
+            </p>
+          </div>
 
           <Tabs defaultValue="entrar">
             <TabsList className="w-full">

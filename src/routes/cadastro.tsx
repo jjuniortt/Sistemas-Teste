@@ -44,6 +44,14 @@ import {
   removerRegistro,
 } from "@/lib/cadastro-db";
 import { exportarCSV, exportarJSON, exportarPDF } from "@/lib/exportar";
+import {
+  EMPRESAS,
+  definirEmpresaAtiva,
+  limparEmpresaAtiva,
+  nomeEmpresa,
+  obterEmpresaAtiva,
+  type EmpresaCodigo,
+} from "@/lib/empresas";
 
 
 export const Route = createFileRoute("/cadastro")({
@@ -132,23 +140,40 @@ function CadastroPage() {
   const { user, carregando: carregandoSessao } = useAuth();
   const [dados, setDados] = useState<Cadastro>(cadastroVazio);
   const [carregandoDados, setCarregandoDados] = useState(true);
+  const [empresa, setEmpresa] = useState<EmpresaCodigo | null>(null);
 
   useEffect(() => {
-    if (!carregandoSessao && !user) navigate({ to: "/" });
+    if (carregandoSessao) return;
+    if (!user) {
+      navigate({ to: "/" });
+      return;
+    }
+    const ativa = obterEmpresaAtiva();
+    if (!ativa) {
+      navigate({ to: "/" });
+      return;
+    }
+    setEmpresa(ativa);
   }, [carregandoSessao, user, navigate]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !empresa) return;
     let ativo = true;
     setCarregandoDados(true);
-    carregarCadastro(user.id)
+    carregarCadastro(user.id, empresa)
       .then((c) => ativo && setDados(c))
       .catch(() => toast.error("Não foi possível carregar sua parametrização."))
       .finally(() => ativo && setCarregandoDados(false));
     return () => {
       ativo = false;
     };
-  }, [user]);
+  }, [user, empresa]);
+
+  const trocarEmpresa = (codigo: EmpresaCodigo) => {
+    definirEmpresaAtiva(codigo);
+    setDados(cadastroVazio);
+    setEmpresa(codigo);
+  };
 
   // Emergência
   const [esp, setEsp] = useState({ nome: "", observacao: "" });
@@ -209,11 +234,12 @@ function CadastroPage() {
 
 
   const sair = useCallback(async () => {
+    limparEmpresaAtiva();
     await supabase.auth.signOut();
     navigate({ to: "/" });
   }, [navigate]);
 
-  if (carregandoSessao || !user) return null;
+  if (carregandoSessao || !user || !empresa) return null;
 
   const addEspecialidade = async () => {
     const nome = esp.nome.trim();
@@ -221,7 +247,7 @@ function CadastroPage() {
     if (dados.especialidades.some((e) => e.nome.toLowerCase() === nome.toLowerCase()))
       return toast.error("Especialidade já cadastrada.");
     try {
-      const criada = await inserirEspecialidade(user.id, {
+      const criada = await inserirEspecialidade(user.id, empresa, {
         nome,
         observacao: esp.observacao.trim() || null,
       });
@@ -239,7 +265,7 @@ function CadastroPage() {
     if (area.tipo === "Outra área assistencial" && area.descricao.trim().length < 3)
       return toast.error("Descreva a área assistencial.");
     try {
-      const criada = await inserirArea(user.id, {
+      const criada = await inserirArea(user.id, empresa, {
         tipo: area.tipo,
         descricao: area.descricao.trim(),
         leitos,
@@ -259,7 +285,7 @@ function CadastroPage() {
     if (quartos < 1) return toast.error("Quantitativo de quartos deve ser maior que zero.");
     if (lpq < 1) return toast.error("Leitos por quarto deve ser maior que zero.");
     try {
-      const criado = await inserirSetor(user.id, {
+      const criado = await inserirSetor(user.id, empresa, {
         nome: setor.nome.trim(),
         quartos,
         leitosPorQuarto: lpq,
@@ -277,7 +303,7 @@ function CadastroPage() {
     if (uc.nome.trim().length < 3) return toast.error("Informe a identificação da unidade.");
     if (leitos < 1) return toast.error("Quantitativo de leitos deve ser maior que zero.");
     try {
-      const criada = await inserirUnidadeCritica(user.id, {
+      const criada = await inserirUnidadeCritica(user.id, empresa, {
         tipo: uc.tipo,
         perfil: uc.perfil,
         nome: uc.nome.trim(),
@@ -397,10 +423,25 @@ function CadastroPage() {
           <div>
             <h1 className="text-lg font-semibold">Cadastro da Estrutura Assistencial</h1>
             <p className="text-sm text-muted-foreground">
+              {nomeEmpresa(empresa)}
+            </p>
+            <p className="text-xs text-muted-foreground">
               {user.email} — emergência, internação, UTI e UCI
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Select value={empresa} onValueChange={(v) => trocarEmpresa(v as EmpresaCodigo)}>
+              <SelectTrigger className="w-[280px]" aria-label="Empresa ativa">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {EMPRESAS.map((e) => (
+                  <SelectItem key={e.codigo} value={e.codigo}>
+                    {e.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Button variant="outline" onClick={() => exportarCSV(dados)}>
               Exportar CSV
             </Button>
@@ -410,7 +451,7 @@ function CadastroPage() {
             <Button
               variant="outline"
               onClick={() => {
-                if (!exportarPDF(dados, user.email ?? undefined))
+                if (!exportarPDF(dados, `${nomeEmpresa(empresa)} — ${user.email ?? ""}`))
                   toast.error("Permita pop-ups para visualizar o PDF.");
               }}
             >
