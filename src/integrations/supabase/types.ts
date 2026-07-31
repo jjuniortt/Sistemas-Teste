@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           created_at: string
           descricao: string
+          empresa: Database["public"]["Enums"]["empresa_codigo"]
           id: string
           leitos: number
           tipo: string
@@ -27,6 +28,7 @@ export type Database = {
         Insert: {
           created_at?: string
           descricao?: string
+          empresa?: Database["public"]["Enums"]["empresa_codigo"]
           id?: string
           leitos?: number
           tipo: string
@@ -36,6 +38,7 @@ export type Database = {
         Update: {
           created_at?: string
           descricao?: string
+          empresa?: Database["public"]["Enums"]["empresa_codigo"]
           id?: string
           leitos?: number
           tipo?: string
@@ -47,6 +50,7 @@ export type Database = {
       especialidades: {
         Row: {
           created_at: string
+          empresa: Database["public"]["Enums"]["empresa_codigo"]
           id: string
           nome: string
           observacao: string | null
@@ -55,6 +59,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          empresa?: Database["public"]["Enums"]["empresa_codigo"]
           id?: string
           nome: string
           observacao?: string | null
@@ -63,6 +68,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          empresa?: Database["public"]["Enums"]["empresa_codigo"]
           id?: string
           nome?: string
           observacao?: string | null
@@ -98,6 +104,7 @@ export type Database = {
       setores_internacao: {
         Row: {
           created_at: string
+          empresa: Database["public"]["Enums"]["empresa_codigo"]
           id: string
           leitos_por_quarto: number
           nome: string
@@ -107,6 +114,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          empresa?: Database["public"]["Enums"]["empresa_codigo"]
           id?: string
           leitos_por_quarto?: number
           nome: string
@@ -116,6 +124,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          empresa?: Database["public"]["Enums"]["empresa_codigo"]
           id?: string
           leitos_por_quarto?: number
           nome?: string
@@ -128,6 +137,7 @@ export type Database = {
       unidades_criticas: {
         Row: {
           created_at: string
+          empresa: Database["public"]["Enums"]["empresa_codigo"]
           id: string
           leitos: number
           nome: string
@@ -138,6 +148,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          empresa?: Database["public"]["Enums"]["empresa_codigo"]
           id?: string
           leitos?: number
           nome: string
@@ -148,6 +159,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          empresa?: Database["public"]["Enums"]["empresa_codigo"]
           id?: string
           leitos?: number
           nome?: string
@@ -166,7 +178,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      empresa_codigo: "dom-luiz-gonzaga" | "humberto-lucena" | "distrital-belem"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -293,6 +305,12 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      empresa_codigo: [
+        "dom-luiz-gonzaga",
+        "humberto-lucena",
+        "distrital-belem",
+      ],
+    },
   },
 } as const
