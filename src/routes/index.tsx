@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import logoAghUse from "@/assets/aghuse.png.asset.json";
+import logoAghUse from "@/assets/aghuse2-2.png.asset.json";
 import {
   EMPRESAS,
   definirEmpresaAtiva,
