@@ -725,27 +725,71 @@ function CadastroPage() {
                       <TableHead className="text-right">Quartos</TableHead>
                       <TableHead className="text-right">Leitos/quarto</TableHead>
                       <TableHead className="text-right">Total de leitos</TableHead>
-                      <TableHead className="w-24" />
+                      <TableHead className="w-44" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {dados.setoresInternacao.map((s) => (
-                      <TableRow key={s.id}>
-                        <TableCell className="font-medium">{s.nome}</TableCell>
-                        <TableCell className="text-right">{s.quartos}</TableCell>
-                        <TableCell className="text-right">{s.leitosPorQuarto}</TableCell>
-                        <TableCell className="text-right font-medium">{leitosDoSetor(s)}</TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => remover("setoresInternacao", s.id)}
-                          >
-                            Remover
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {dados.setoresInternacao.map((s) =>
+                      edSetor?.id === s.id ? (
+                        <TableRow key={s.id}>
+                          <TableCell>
+                            <Input
+                              value={edSetor.nome}
+                              onChange={(ev) => setEdSetor({ ...edSetor, nome: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              min={1}
+                              value={edSetor.quartos}
+                              onChange={(ev) => setEdSetor({ ...edSetor, quartos: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              min={1}
+                              value={edSetor.leitosPorQuarto}
+                              onChange={(ev) =>
+                                setEdSetor({ ...edSetor, leitosPorQuarto: ev.target.value })
+                              }
+                            />
+                          </TableCell>
+                          <TableCell className="text-right font-medium">
+                            {numero(edSetor.quartos) * numero(edSetor.leitosPorQuarto)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AcoesEdicao
+                              onSalvar={salvarSetor}
+                              onCancelar={() => setEdSetor(null)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        <TableRow key={s.id}>
+                          <TableCell className="font-medium">{s.nome}</TableCell>
+                          <TableCell className="text-right">{s.quartos}</TableCell>
+                          <TableCell className="text-right">{s.leitosPorQuarto}</TableCell>
+                          <TableCell className="text-right font-medium">
+                            {leitosDoSetor(s)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AcoesLinha
+                              onEditar={() =>
+                                setEdSetor({
+                                  id: s.id,
+                                  nome: s.nome,
+                                  quartos: String(s.quartos),
+                                  leitosPorQuarto: String(s.leitosPorQuarto),
+                                })
+                              }
+                              onRemover={() => remover("setoresInternacao", s.id)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ),
+                    )}
                     <TableRow>
                       <TableCell colSpan={3} className="font-medium">
                         Dimensionamento total de leitos de internação
