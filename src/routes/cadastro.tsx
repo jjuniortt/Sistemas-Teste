@@ -80,7 +80,46 @@ function Indicador({
   );
 }
 
+function AcoesLinha({ onEditar, onRemover }: { onEditar: () => void; onRemover: () => void }) {
+  return (
+    <div className="flex justify-end gap-1">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onEditar}
+        className="hover:bg-triage-green/15 hover:text-triage-green"
+      >
+        Editar
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onRemover}
+        className="hover:bg-destructive/10 hover:text-destructive"
+      >
+        Remover
+      </Button>
+    </div>
+  );
+}
 
+function AcoesEdicao({ onSalvar, onCancelar }: { onSalvar: () => void; onCancelar: () => void }) {
+  return (
+    <div className="flex justify-end gap-1">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onSalvar}
+        className="hover:bg-triage-green/15 hover:text-triage-green"
+      >
+        Salvar
+      </Button>
+      <Button variant="ghost" size="sm" onClick={onCancelar}>
+        Cancelar
+      </Button>
+    </div>
+  );
+}
 
 const numero = (v: string) => Math.max(0, Math.floor(Number(v) || 0));
 
