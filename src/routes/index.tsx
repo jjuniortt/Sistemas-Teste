@@ -145,7 +145,7 @@ function Login() {
             <img
               src={logoAghUse.url}
               alt="AGHUse — Secretaria de Estado da Saúde, Governo da Paraíba"
-              className="h-20 w-auto"
+              className="h-28 w-auto"
             />
           </div>
           <header className="space-y-2 text-center">
