@@ -589,28 +589,75 @@ function CadastroPage() {
                       <TableHead>Área</TableHead>
                       <TableHead>Descrição</TableHead>
                       <TableHead className="text-right">Leitos</TableHead>
-                      <TableHead className="w-24" />
+                      <TableHead className="w-44" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {dados.areasEmergencia.map((a) => (
-                      <TableRow key={a.id}>
-                        <TableCell>
-                          <Badge variant="secondary">{a.tipo}</Badge>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">{a.descricao || "—"}</TableCell>
-                        <TableCell className="text-right font-medium">{a.leitos}</TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => remover("areasEmergencia", a.id)}
-                          >
-                            Remover
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {dados.areasEmergencia.map((a) =>
+                      edArea?.id === a.id ? (
+                        <TableRow key={a.id}>
+                          <TableCell>
+                            <Select
+                              value={edArea.tipo}
+                              onValueChange={(v) =>
+                                setEdArea({ ...edArea, tipo: v as AreaEmergenciaTipo })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {AREAS_EMERGENCIA.map((x) => (
+                                  <SelectItem key={x} value={x}>
+                                    {x}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={edArea.descricao}
+                              onChange={(ev) => setEdArea({ ...edArea, descricao: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              min={1}
+                              value={edArea.leitos}
+                              onChange={(ev) => setEdArea({ ...edArea, leitos: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AcoesEdicao onSalvar={salvarArea} onCancelar={() => setEdArea(null)} />
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        <TableRow key={a.id}>
+                          <TableCell>
+                            <Badge variant="secondary">{a.tipo}</Badge>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {a.descricao || "—"}
+                          </TableCell>
+                          <TableCell className="text-right font-medium">{a.leitos}</TableCell>
+                          <TableCell className="text-right">
+                            <AcoesLinha
+                              onEditar={() =>
+                                setEdArea({
+                                  id: a.id,
+                                  tipo: a.tipo,
+                                  descricao: a.descricao,
+                                  leitos: String(a.leitos),
+                                })
+                              }
+                              onRemover={() => remover("areasEmergencia", a.id)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ),
+                    )}
                     <TableRow>
                       <TableCell colSpan={2} className="font-medium">
                         Total de leitos da emergência
