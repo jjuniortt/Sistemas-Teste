@@ -44,7 +44,6 @@ import {
   removerRegistro,
 } from "@/lib/cadastro-db";
 import { exportarCSV, exportarJSON, exportarPDF } from "@/lib/exportar";
-import logoAghUse from "@/assets/aghuse.png.asset.json";
 import {
   limparEmpresaAtiva,
   nomeEmpresa,
