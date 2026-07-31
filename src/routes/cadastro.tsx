@@ -66,33 +66,20 @@ export const Route = createFileRoute("/cadastro")({
 function Indicador({
   rotulo,
   valor,
-  itens = [],
 }: {
   rotulo: string;
   valor: number | string;
-  itens?: { chave: string; rotulo: string; valor: string | number }[];
 }) {
   return (
     <Card className="h-full">
       <CardContent className="p-5">
         <p className="text-xs tracking-wide text-muted-foreground uppercase">{rotulo}</p>
         <p className="mt-2 text-3xl font-semibold">{valor}</p>
-        <ul className="mt-3 max-h-32 space-y-1 overflow-y-auto text-xs">
-          {itens.length === 0 ? (
-            <li className="text-muted-foreground">Nenhum registro cadastrado.</li>
-          ) : (
-            itens.map((i) => (
-              <li key={i.chave} className="flex items-center justify-between gap-2">
-                <span className="truncate text-muted-foreground">{i.rotulo}</span>
-                <span className="font-medium tabular-nums">{i.valor}</span>
-              </li>
-            ))
-          )}
-        </ul>
       </CardContent>
     </Card>
   );
 }
+
 
 
 const numero = (v: string) => Math.max(0, Math.floor(Number(v) || 0));
