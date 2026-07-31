@@ -138,6 +138,42 @@ export async function inserirUnidadeCritica(
   };
 }
 
+export async function atualizarEspecialidade(id: string, dados: Omit<Especialidade, "id">) {
+  const { error } = await supabase
+    .from("especialidades")
+    .update({ nome: dados.nome, observacao: dados.observacao ?? null })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function atualizarArea(id: string, dados: Omit<AreaEmergencia, "id">) {
+  const { error } = await supabase
+    .from("areas_emergencia")
+    .update({ tipo: dados.tipo, descricao: dados.descricao, leitos: dados.leitos })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function atualizarSetor(id: string, dados: Omit<SetorInternacao, "id">) {
+  const { error } = await supabase
+    .from("setores_internacao")
+    .update({
+      nome: dados.nome,
+      quartos: dados.quartos,
+      leitos_por_quarto: dados.leitosPorQuarto,
+    })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function atualizarUnidadeCritica(id: string, dados: Omit<UnidadeCritica, "id">) {
+  const { error } = await supabase
+    .from("unidades_criticas")
+    .update({ tipo: dados.tipo, perfil: dados.perfil, nome: dados.nome, leitos: dados.leitos })
+    .eq("id", id);
+  if (error) throw error;
+}
+
 export const TABELAS: Record<keyof Cadastro, string> = {
   especialidades: "especialidades",
   areasEmergencia: "areas_emergencia",
