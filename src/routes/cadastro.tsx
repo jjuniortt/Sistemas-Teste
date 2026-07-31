@@ -275,12 +275,13 @@ function CadastroPage() {
 
       <main className="mx-auto max-w-6xl space-y-8 px-6 py-8">
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          <Indicador rotulo="Leitos emergência" valor={totais.emergencia} itens={resumo.emergencia} />
-          <Indicador rotulo="Leitos internação" valor={totais.internacao} itens={resumo.internacao} />
-          <Indicador rotulo="Leitos UTI" valor={totais.uti} itens={resumo.uti} />
-          <Indicador rotulo="Leitos UCI" valor={totais.uci} itens={resumo.uci} />
-          <Indicador rotulo="Total geral" valor={totais.geral} itens={resumo.geral} />
+          <Indicador rotulo="Leitos emergência" valor={totais.emergencia} />
+          <Indicador rotulo="Leitos internação" valor={totais.internacao} />
+          <Indicador rotulo="Leitos UTI" valor={totais.uti} />
+          <Indicador rotulo="Leitos UCI" valor={totais.uci} />
+          <Indicador rotulo="Total geral" valor={totais.geral} />
         </section>
+
 
         <Tabs defaultValue="emergencia">
           <TabsList>
