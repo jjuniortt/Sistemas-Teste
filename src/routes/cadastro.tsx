@@ -414,10 +414,8 @@ function CadastroPage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
-        <div className="mx-auto flex max-w-6xl justify-center px-6 pt-6">
-          <img src={logoAghUse.url} alt="AGHUse — Secretaria de Estado da Saúde, Governo da Paraíba" className="h-16 w-auto" />
-        </div>
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+
           <div>
             <h1 className="text-lg font-semibold">Cadastro da Estrutura Assistencial</h1>
             <p className="text-sm text-muted-foreground">
