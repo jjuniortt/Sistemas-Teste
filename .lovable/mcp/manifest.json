@@ -1,0 +1,238 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.1",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://pmgjturepkodvsoxubkg.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "data-weaver",
+      "version": "0.1.0",
+      "title": "Data Weaver"
+    },
+    "tools": [
+      {
+        "name": "listar_estrutura",
+        "title": "Listar estrutura assistencial",
+        "description": "Lista toda a parametrização do usuário autenticado: especialidades e áreas da emergência, setores de internação e unidades críticas (UTI/UCI), com o total de leitos.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "adicionar_especialidade",
+        "title": "Adicionar especialidade da emergência",
+        "description": "Cadastra uma especialidade atendida na emergência para o usuário autenticado.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "nome": {
+              "type": "string",
+              "minLength": 3,
+              "description": "Nome da especialidade (mínimo 3 caracteres)."
+            },
+            "observacao": {
+              "description": "Observação opcional.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "nome"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "adicionar_area_emergencia",
+        "title": "Adicionar área da emergência",
+        "description": "Cadastra uma área assistencial da emergência (verde, amarela, vermelha, observação ou outra) com a quantidade de leitos.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "tipo": {
+              "type": "string",
+              "enum": [
+                "Área Verde",
+                "Área Amarela",
+                "Área Vermelha",
+                "Sala de Observação",
+                "Outra área assistencial"
+              ],
+              "description": "Tipo da área assistencial."
+            },
+            "descricao": {
+              "type": "string",
+              "minLength": 3,
+              "description": "Descrição da área."
+            },
+            "leitos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991,
+              "description": "Quantidade de leitos da área."
+            }
+          },
+          "required": [
+            "tipo",
+            "descricao",
+            "leitos"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "adicionar_setor_internacao",
+        "title": "Adicionar setor de internação",
+        "description": "Cadastra um setor/unidade de internação com quantidade de quartos e leitos por quarto. O total de leitos é o produto dos dois.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "nome": {
+              "type": "string",
+              "minLength": 3,
+              "description": "Nome do setor/unidade de internação."
+            },
+            "quartos": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "description": "Quantidade de quartos do setor."
+            },
+            "leitos_por_quarto": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "description": "Quantidade de leitos por quarto."
+            }
+          },
+          "required": [
+            "nome",
+            "quartos",
+            "leitos_por_quarto"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "adicionar_unidade_critica",
+        "title": "Adicionar UTI ou UCI",
+        "description": "Cadastra uma unidade crítica (UTI ou UCI) com perfil e quantidade de leitos.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "tipo": {
+              "type": "string",
+              "enum": [
+                "UTI",
+                "UCI"
+              ],
+              "description": "Tipo da unidade crítica."
+            },
+            "perfil": {
+              "type": "string",
+              "enum": [
+                "Adulto",
+                "Pediátrica",
+                "Neonatal",
+                "Outra"
+              ],
+              "description": "Perfil assistencial."
+            },
+            "nome": {
+              "type": "string",
+              "minLength": 3,
+              "description": "Identificação da unidade."
+            },
+            "leitos": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "description": "Quantidade de leitos da unidade."
+            }
+          },
+          "required": [
+            "tipo",
+            "perfil",
+            "nome",
+            "leitos"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "remover_registro",
+        "title": "Remover registro da parametrização",
+        "description": "Remove definitivamente um registro cadastrado pelo usuário autenticado, pelo seu id.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "tipo": {
+              "type": "string",
+              "enum": [
+                "especialidade",
+                "area_emergencia",
+                "setor_internacao",
+                "unidade_critica"
+              ],
+              "description": "Categoria do registro a remover."
+            },
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+              "description": "Identificador do registro."
+            }
+          },
+          "required": [
+            "tipo",
+            "id"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
