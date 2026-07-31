@@ -485,25 +485,46 @@ function CadastroPage() {
                     <TableRow>
                       <TableHead>Especialidade</TableHead>
                       <TableHead>Observação</TableHead>
-                      <TableHead className="w-24" />
+                      <TableHead className="w-44" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {dados.especialidades.map((e) => (
-                      <TableRow key={e.id}>
-                        <TableCell className="font-medium">{e.nome}</TableCell>
-                        <TableCell className="text-muted-foreground">{e.observacao ?? "—"}</TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => remover("especialidades", e.id)}
-                          >
-                            Remover
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {dados.especialidades.map((e) =>
+                      edEsp?.id === e.id ? (
+                        <TableRow key={e.id}>
+                          <TableCell>
+                            <Input
+                              value={edEsp.nome}
+                              onChange={(ev) => setEdEsp({ ...edEsp, nome: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={edEsp.observacao}
+                              onChange={(ev) => setEdEsp({ ...edEsp, observacao: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AcoesEdicao onSalvar={salvarEsp} onCancelar={() => setEdEsp(null)} />
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        <TableRow key={e.id}>
+                          <TableCell className="font-medium">{e.nome}</TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {e.observacao ?? "—"}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AcoesLinha
+                              onEditar={() =>
+                                setEdEsp({ id: e.id, nome: e.nome, observacao: e.observacao ?? "" })
+                              }
+                              onRemover={() => remover("especialidades", e.id)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ),
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>
