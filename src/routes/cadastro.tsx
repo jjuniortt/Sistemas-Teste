@@ -39,7 +39,8 @@ import {
   inserirUnidadeCritica,
   removerRegistro,
 } from "@/lib/cadastro-db";
-import { exportarCSV, exportarJSON } from "@/lib/exportar";
+import { exportarCSV, exportarJSON, exportarPDF } from "@/lib/exportar";
+import { CardsCriticos, CardsEmergencia, CardsInternacao } from "@/components/cards-resumo";
 
 export const Route = createFileRoute("/cadastro")({
   head: () => ({
@@ -239,7 +240,17 @@ function CadastroPage() {
             <Button variant="outline" onClick={() => exportarJSON(dados)}>
               Exportar JSON
             </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (!exportarPDF(dados, user.email ?? undefined))
+                  toast.error("Permita pop-ups para visualizar o PDF.");
+              }}
+            >
+              Exportar PDF
+            </Button>
             <Button variant="outline" onClick={sair}>
+
               Sair
             </Button>
           </div>
@@ -270,6 +281,7 @@ function CadastroPage() {
 
           {/* ---------------- Emergência ---------------- */}
           <TabsContent value="emergencia" className="space-y-6 pt-6">
+            <CardsEmergencia dados={dados} />
             <Card>
               <CardHeader>
                 <CardTitle>Especialidades atendidas na emergência</CardTitle>
@@ -425,6 +437,7 @@ function CadastroPage() {
 
           {/* ---------------- Internação ---------------- */}
           <TabsContent value="internacao" className="space-y-6 pt-6">
+            <CardsInternacao dados={dados} />
             <Card>
               <CardHeader>
                 <CardTitle>Unidades/setores de internação</CardTitle>
@@ -512,6 +525,7 @@ function CadastroPage() {
 
           {/* ---------------- UTI / UCI ---------------- */}
           <TabsContent value="criticos" className="space-y-6 pt-6">
+            <CardsCriticos dados={dados} />
             <Card>
               <CardHeader>
                 <CardTitle>Terapia intensiva e cuidados intermediários</CardTitle>
