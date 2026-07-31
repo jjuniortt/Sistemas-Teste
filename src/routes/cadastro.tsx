@@ -873,6 +873,11 @@ function CadastroPage() {
                   </div>
                 </div>
 
+                <p className="text-sm text-muted-foreground">
+                  Exibindo apenas os registros de <span className="font-medium">{uc.tipo}</span>.
+                  Altere o campo “Tipo” para ver os dados da outra modalidade.
+                </p>
+
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -880,35 +885,106 @@ function CadastroPage() {
                       <TableHead>Perfil</TableHead>
                       <TableHead>Unidade</TableHead>
                       <TableHead className="text-right">Leitos</TableHead>
-                      <TableHead className="w-24" />
+                      <TableHead className="w-44" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {dados.unidadesCriticas.map((u) => (
-                      <TableRow key={u.id}>
-                        <TableCell>
-                          <Badge variant={u.tipo === "UTI" ? "default" : "secondary"}>{u.tipo}</Badge>
-                        </TableCell>
-                        <TableCell>{u.perfil}</TableCell>
-                        <TableCell className="font-medium">{u.nome}</TableCell>
-                        <TableCell className="text-right font-medium">{u.leitos}</TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => remover("unidadesCriticas", u.id)}
-                          >
-                            Remover
-                          </Button>
+                    {unidadesFiltradas.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-muted-foreground">
+                          Nenhuma {uc.tipo} cadastrada.
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )}
+                    {unidadesFiltradas.map((u) =>
+                      edUc?.id === u.id ? (
+                        <TableRow key={u.id}>
+                          <TableCell>
+                            <Select
+                              value={edUc.tipo}
+                              onValueChange={(v) =>
+                                setEdUc({ ...edUc, tipo: v as TipoUnidadeCritica })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="UTI">UTI</SelectItem>
+                                <SelectItem value="UCI">UCI</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <Select
+                              value={edUc.perfil}
+                              onValueChange={(v) =>
+                                setEdUc({ ...edUc, perfil: v as PerfilUnidadeCritica })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {PERFIS_UNIDADE_CRITICA.map((p) => (
+                                  <SelectItem key={p} value={p}>
+                                    {p}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={edUc.nome}
+                              onChange={(ev) => setEdUc({ ...edUc, nome: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              min={1}
+                              value={edUc.leitos}
+                              onChange={(ev) => setEdUc({ ...edUc, leitos: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AcoesEdicao onSalvar={salvarUc} onCancelar={() => setEdUc(null)} />
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        <TableRow key={u.id}>
+                          <TableCell>
+                            <Badge variant={u.tipo === "UTI" ? "default" : "secondary"}>
+                              {u.tipo}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{u.perfil}</TableCell>
+                          <TableCell className="font-medium">{u.nome}</TableCell>
+                          <TableCell className="text-right font-medium">{u.leitos}</TableCell>
+                          <TableCell className="text-right">
+                            <AcoesLinha
+                              onEditar={() =>
+                                setEdUc({
+                                  id: u.id,
+                                  tipo: u.tipo,
+                                  perfil: u.perfil,
+                                  nome: u.nome,
+                                  leitos: String(u.leitos),
+                                })
+                              }
+                              onRemover={() => remover("unidadesCriticas", u.id)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ),
+                    )}
                     <TableRow>
                       <TableCell colSpan={3} className="font-medium">
-                        Total de leitos críticos (UTI + UCI)
+                        Total de leitos de {uc.tipo}
                       </TableCell>
                       <TableCell className="text-right font-semibold">
-                        {totais.uti + totais.uci}
+                        {uc.tipo === "UTI" ? totais.uti : totais.uci}
                       </TableCell>
                       <TableCell />
                     </TableRow>
