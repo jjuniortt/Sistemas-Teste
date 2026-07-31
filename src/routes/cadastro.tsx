@@ -168,11 +168,7 @@ function CadastroPage() {
     };
   }, [user, empresa]);
 
-  const trocarEmpresa = (codigo: EmpresaCodigo) => {
-    definirEmpresaAtiva(codigo);
-    setDados(cadastroVazio);
-    setEmpresa(codigo);
-  };
+
 
   // Emergência
   const [esp, setEsp] = useState({ nome: "", observacao: "" });
