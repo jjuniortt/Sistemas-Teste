@@ -436,6 +436,7 @@ function CadastroPage() {
 
           {/* ---------------- Internação ---------------- */}
           <TabsContent value="internacao" className="space-y-6 pt-6">
+            <CardsInternacao dados={dados} />
             <Card>
               <CardHeader>
                 <CardTitle>Unidades/setores de internação</CardTitle>
