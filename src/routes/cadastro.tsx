@@ -44,9 +44,8 @@ import {
   removerRegistro,
 } from "@/lib/cadastro-db";
 import { exportarCSV, exportarJSON, exportarPDF } from "@/lib/exportar";
+import logoAghUse from "@/assets/aghuse.png.asset.json";
 import {
-  EMPRESAS,
-  definirEmpresaAtiva,
   limparEmpresaAtiva,
   nomeEmpresa,
   obterEmpresaAtiva,
@@ -169,11 +168,7 @@ function CadastroPage() {
     };
   }, [user, empresa]);
 
-  const trocarEmpresa = (codigo: EmpresaCodigo) => {
-    definirEmpresaAtiva(codigo);
-    setDados(cadastroVazio);
-    setEmpresa(codigo);
-  };
+
 
   // Emergência
   const [esp, setEsp] = useState({ nome: "", observacao: "" });
@@ -419,6 +414,9 @@ function CadastroPage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
+        <div className="mx-auto flex max-w-6xl justify-center px-6 pt-6">
+          <img src={logoAghUse.url} alt="AGHUse — Secretaria de Estado da Saúde, Governo da Paraíba" className="h-16 w-auto" />
+        </div>
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div>
             <h1 className="text-lg font-semibold">Cadastro da Estrutura Assistencial</h1>
@@ -430,18 +428,7 @@ function CadastroPage() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Select value={empresa} onValueChange={(v) => trocarEmpresa(v as EmpresaCodigo)}>
-              <SelectTrigger className="w-[280px]" aria-label="Empresa ativa">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {EMPRESAS.map((e) => (
-                  <SelectItem key={e.codigo} value={e.codigo}>
-                    {e.nome}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+
             <Button variant="outline" onClick={() => exportarCSV(dados)}>
               Exportar CSV
             </Button>
