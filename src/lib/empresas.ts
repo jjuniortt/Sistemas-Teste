@@ -3,17 +3,24 @@
  * O código é persistido no banco na coluna `empresa` de cada tabela.
  */
 
-export type EmpresaCodigo = "dom-luiz-gonzaga" | "humberto-lucena" | "distrital-belem";
+export type EmpresaCodigo =
+  | "humberto-lucena"
+  | "guarabira"
+  | "solanea"
+  | "mamanguape"
+  | "arlinda-marques";
 
 export type Empresa = { codigo: EmpresaCodigo; nome: string };
 
 export const EMPRESAS: Empresa[] = [
-  { codigo: "dom-luiz-gonzaga", nome: "Hospital Emergência e Trauma Dom Luiz Gonzaga" },
   { codigo: "humberto-lucena", nome: "Hospital de Emergência e Trauma Senador Humberto Lucena" },
-  { codigo: "distrital-belem", nome: "Hospital Distrital de Belém" },
+  { codigo: "guarabira", nome: "Hospital de Guarabira" },
+  { codigo: "solanea", nome: "Hospital de Solanea" },
+  { codigo: "mamanguape", nome: "Hospital de Mamanguape" },
+  { codigo: "arlinda-marques", nome: "Hospital Arlinda Marques" },
 ];
 
-export const EMPRESA_PADRAO: EmpresaCodigo = "dom-luiz-gonzaga";
+export const EMPRESA_PADRAO: EmpresaCodigo = "humberto-lucena";
 
 const CHAVE = "empresa-ativa";
 
