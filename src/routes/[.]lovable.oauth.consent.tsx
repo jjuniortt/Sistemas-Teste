@@ -3,6 +3,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
+type OAuthDetalhes = {
+  redirect_url?: string;
+  redirect_to?: string;
+  client?: { name?: string } | null;
+};
+
 export const Route = createFileRoute("/.lovable/oauth/consent")({
   ssr: false,
   validateSearch: (s: Record<string, unknown>) => ({
@@ -18,9 +24,10 @@ export const Route = createFileRoute("/.lovable/oauth/consent")({
     const authorizationId = new URLSearchParams(location.search).get("authorization_id")!;
     const { data, error } = await supabase.auth.oauth.getAuthorizationDetails(authorizationId);
     if (error) throw error;
-    const immediate = data?.redirect_url ?? data?.redirect_to;
-    if (immediate && !data?.client) throw redirect({ href: immediate });
-    return data;
+    const detalhes = data as OAuthDetalhes | null;
+    const immediate = detalhes?.redirect_url ?? detalhes?.redirect_to;
+    if (immediate && !detalhes?.client) throw redirect({ href: immediate });
+    return detalhes;
   },
   component: Consent,
   errorComponent: ({ error }) => (
@@ -49,7 +56,8 @@ function Consent() {
       setErro(error.message);
       return;
     }
-    const destino = data?.redirect_url ?? data?.redirect_to;
+    const resposta = data as OAuthDetalhes | null;
+    const destino = resposta?.redirect_url ?? resposta?.redirect_to;
     if (!destino) {
       setBusy(false);
       setErro("O servidor de autorização não retornou um redirecionamento.");
