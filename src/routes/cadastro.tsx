@@ -32,6 +32,10 @@ import {
   type TipoUnidadeCritica,
 } from "@/lib/cadastro-store";
 import {
+  atualizarArea,
+  atualizarEspecialidade,
+  atualizarSetor,
+  atualizarUnidadeCritica,
   carregarCadastro,
   inserirArea,
   inserirEspecialidade,
@@ -80,7 +84,46 @@ function Indicador({
   );
 }
 
+function AcoesLinha({ onEditar, onRemover }: { onEditar: () => void; onRemover: () => void }) {
+  return (
+    <div className="flex justify-end gap-1">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onEditar}
+        className="hover:bg-triage-green/15 hover:text-triage-green"
+      >
+        Editar
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onRemover}
+        className="hover:bg-destructive/10 hover:text-destructive"
+      >
+        Remover
+      </Button>
+    </div>
+  );
+}
 
+function AcoesEdicao({ onSalvar, onCancelar }: { onSalvar: () => void; onCancelar: () => void }) {
+  return (
+    <div className="flex justify-end gap-1">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onSalvar}
+        className="hover:bg-triage-green/15 hover:text-triage-green"
+      >
+        Salvar
+      </Button>
+      <Button variant="ghost" size="sm" onClick={onCancelar}>
+        Cancelar
+      </Button>
+    </div>
+  );
+}
 
 const numero = (v: string) => Math.max(0, Math.floor(Number(v) || 0));
 
@@ -123,6 +166,34 @@ function CadastroPage() {
     nome: string;
     leitos: string;
   }>({ tipo: "UTI", perfil: "Adulto", nome: "", leitos: "" });
+
+  // Edição inline
+  const [edEsp, setEdEsp] = useState<{ id: string; nome: string; observacao: string } | null>(null);
+  const [edArea, setEdArea] = useState<{
+    id: string;
+    tipo: AreaEmergenciaTipo;
+    descricao: string;
+    leitos: string;
+  } | null>(null);
+  const [edSetor, setEdSetor] = useState<{
+    id: string;
+    nome: string;
+    quartos: string;
+    leitosPorQuarto: string;
+  } | null>(null);
+  const [edUc, setEdUc] = useState<{
+    id: string;
+    tipo: TipoUnidadeCritica;
+    perfil: PerfilUnidadeCritica;
+    nome: string;
+    leitos: string;
+  } | null>(null);
+
+  const unidadesFiltradas = useMemo(
+    () => dados.unidadesCriticas.filter((u) => u.tipo === uc.tipo),
+    [dados.unidadesCriticas, uc.tipo],
+  );
+
 
   const totais = useMemo(
     () => ({
@@ -233,6 +304,92 @@ function CadastroPage() {
     }
   };
 
+  const salvarEsp = async () => {
+    if (!edEsp) return;
+    const nome = edEsp.nome.trim();
+    if (nome.length < 3) return toast.error("Informe a especialidade (mínimo 3 caracteres).");
+    const observacao = edEsp.observacao.trim() || null;
+    try {
+      await atualizarEspecialidade(edEsp.id, { nome, observacao });
+      setDados((d) => ({
+        ...d,
+        especialidades: d.especialidades.map((e) =>
+          e.id === edEsp.id ? { ...e, nome, observacao } : e,
+        ),
+      }));
+      setEdEsp(null);
+      toast.success("Especialidade atualizada.");
+    } catch {
+      toast.error("Erro ao atualizar a especialidade.");
+    }
+  };
+
+  const salvarArea = async () => {
+    if (!edArea) return;
+    const leitos = numero(edArea.leitos);
+    if (leitos < 1) return toast.error("Quantitativo de leitos deve ser maior que zero.");
+    if (edArea.tipo === "Outra área assistencial" && edArea.descricao.trim().length < 3)
+      return toast.error("Descreva a área assistencial.");
+    const dadosArea = { tipo: edArea.tipo, descricao: edArea.descricao.trim(), leitos };
+    try {
+      await atualizarArea(edArea.id, dadosArea);
+      setDados((d) => ({
+        ...d,
+        areasEmergencia: d.areasEmergencia.map((a) =>
+          a.id === edArea.id ? { ...a, ...dadosArea } : a,
+        ),
+      }));
+      setEdArea(null);
+      toast.success("Área atualizada.");
+    } catch {
+      toast.error("Erro ao atualizar a área.");
+    }
+  };
+
+  const salvarSetor = async () => {
+    if (!edSetor) return;
+    const quartos = numero(edSetor.quartos);
+    const lpq = numero(edSetor.leitosPorQuarto);
+    if (edSetor.nome.trim().length < 3) return toast.error("Informe o nome do setor/unidade.");
+    if (quartos < 1) return toast.error("Quantitativo de quartos deve ser maior que zero.");
+    if (lpq < 1) return toast.error("Leitos por quarto deve ser maior que zero.");
+    const novo = { nome: edSetor.nome.trim(), quartos, leitosPorQuarto: lpq };
+    try {
+      await atualizarSetor(edSetor.id, novo);
+      setDados((d) => ({
+        ...d,
+        setoresInternacao: d.setoresInternacao.map((s) =>
+          s.id === edSetor.id ? { ...s, ...novo } : s,
+        ),
+      }));
+      setEdSetor(null);
+      toast.success("Setor atualizado.");
+    } catch {
+      toast.error("Erro ao atualizar o setor.");
+    }
+  };
+
+  const salvarUc = async () => {
+    if (!edUc) return;
+    const leitos = numero(edUc.leitos);
+    if (edUc.nome.trim().length < 3) return toast.error("Informe a identificação da unidade.");
+    if (leitos < 1) return toast.error("Quantitativo de leitos deve ser maior que zero.");
+    const nova = { tipo: edUc.tipo, perfil: edUc.perfil, nome: edUc.nome.trim(), leitos };
+    try {
+      await atualizarUnidadeCritica(edUc.id, nova);
+      setDados((d) => ({
+        ...d,
+        unidadesCriticas: d.unidadesCriticas.map((u) => (u.id === edUc.id ? { ...u, ...nova } : u)),
+      }));
+      setEdUc(null);
+      toast.success("Unidade atualizada.");
+    } catch {
+      toast.error("Erro ao atualizar a unidade.");
+    }
+  };
+
+
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
@@ -328,25 +485,46 @@ function CadastroPage() {
                     <TableRow>
                       <TableHead>Especialidade</TableHead>
                       <TableHead>Observação</TableHead>
-                      <TableHead className="w-24" />
+                      <TableHead className="w-44" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {dados.especialidades.map((e) => (
-                      <TableRow key={e.id}>
-                        <TableCell className="font-medium">{e.nome}</TableCell>
-                        <TableCell className="text-muted-foreground">{e.observacao ?? "—"}</TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => remover("especialidades", e.id)}
-                          >
-                            Remover
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {dados.especialidades.map((e) =>
+                      edEsp?.id === e.id ? (
+                        <TableRow key={e.id}>
+                          <TableCell>
+                            <Input
+                              value={edEsp.nome}
+                              onChange={(ev) => setEdEsp({ ...edEsp, nome: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={edEsp.observacao}
+                              onChange={(ev) => setEdEsp({ ...edEsp, observacao: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AcoesEdicao onSalvar={salvarEsp} onCancelar={() => setEdEsp(null)} />
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        <TableRow key={e.id}>
+                          <TableCell className="font-medium">{e.nome}</TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {e.observacao ?? "—"}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AcoesLinha
+                              onEditar={() =>
+                                setEdEsp({ id: e.id, nome: e.nome, observacao: e.observacao ?? "" })
+                              }
+                              onRemover={() => remover("especialidades", e.id)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ),
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>
@@ -411,28 +589,75 @@ function CadastroPage() {
                       <TableHead>Área</TableHead>
                       <TableHead>Descrição</TableHead>
                       <TableHead className="text-right">Leitos</TableHead>
-                      <TableHead className="w-24" />
+                      <TableHead className="w-44" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {dados.areasEmergencia.map((a) => (
-                      <TableRow key={a.id}>
-                        <TableCell>
-                          <Badge variant="secondary">{a.tipo}</Badge>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">{a.descricao || "—"}</TableCell>
-                        <TableCell className="text-right font-medium">{a.leitos}</TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => remover("areasEmergencia", a.id)}
-                          >
-                            Remover
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {dados.areasEmergencia.map((a) =>
+                      edArea?.id === a.id ? (
+                        <TableRow key={a.id}>
+                          <TableCell>
+                            <Select
+                              value={edArea.tipo}
+                              onValueChange={(v) =>
+                                setEdArea({ ...edArea, tipo: v as AreaEmergenciaTipo })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {AREAS_EMERGENCIA.map((x) => (
+                                  <SelectItem key={x} value={x}>
+                                    {x}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={edArea.descricao}
+                              onChange={(ev) => setEdArea({ ...edArea, descricao: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              min={1}
+                              value={edArea.leitos}
+                              onChange={(ev) => setEdArea({ ...edArea, leitos: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AcoesEdicao onSalvar={salvarArea} onCancelar={() => setEdArea(null)} />
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        <TableRow key={a.id}>
+                          <TableCell>
+                            <Badge variant="secondary">{a.tipo}</Badge>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {a.descricao || "—"}
+                          </TableCell>
+                          <TableCell className="text-right font-medium">{a.leitos}</TableCell>
+                          <TableCell className="text-right">
+                            <AcoesLinha
+                              onEditar={() =>
+                                setEdArea({
+                                  id: a.id,
+                                  tipo: a.tipo,
+                                  descricao: a.descricao,
+                                  leitos: String(a.leitos),
+                                })
+                              }
+                              onRemover={() => remover("areasEmergencia", a.id)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ),
+                    )}
                     <TableRow>
                       <TableCell colSpan={2} className="font-medium">
                         Total de leitos da emergência
@@ -500,27 +725,71 @@ function CadastroPage() {
                       <TableHead className="text-right">Quartos</TableHead>
                       <TableHead className="text-right">Leitos/quarto</TableHead>
                       <TableHead className="text-right">Total de leitos</TableHead>
-                      <TableHead className="w-24" />
+                      <TableHead className="w-44" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {dados.setoresInternacao.map((s) => (
-                      <TableRow key={s.id}>
-                        <TableCell className="font-medium">{s.nome}</TableCell>
-                        <TableCell className="text-right">{s.quartos}</TableCell>
-                        <TableCell className="text-right">{s.leitosPorQuarto}</TableCell>
-                        <TableCell className="text-right font-medium">{leitosDoSetor(s)}</TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => remover("setoresInternacao", s.id)}
-                          >
-                            Remover
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {dados.setoresInternacao.map((s) =>
+                      edSetor?.id === s.id ? (
+                        <TableRow key={s.id}>
+                          <TableCell>
+                            <Input
+                              value={edSetor.nome}
+                              onChange={(ev) => setEdSetor({ ...edSetor, nome: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              min={1}
+                              value={edSetor.quartos}
+                              onChange={(ev) => setEdSetor({ ...edSetor, quartos: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              min={1}
+                              value={edSetor.leitosPorQuarto}
+                              onChange={(ev) =>
+                                setEdSetor({ ...edSetor, leitosPorQuarto: ev.target.value })
+                              }
+                            />
+                          </TableCell>
+                          <TableCell className="text-right font-medium">
+                            {numero(edSetor.quartos) * numero(edSetor.leitosPorQuarto)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AcoesEdicao
+                              onSalvar={salvarSetor}
+                              onCancelar={() => setEdSetor(null)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        <TableRow key={s.id}>
+                          <TableCell className="font-medium">{s.nome}</TableCell>
+                          <TableCell className="text-right">{s.quartos}</TableCell>
+                          <TableCell className="text-right">{s.leitosPorQuarto}</TableCell>
+                          <TableCell className="text-right font-medium">
+                            {leitosDoSetor(s)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AcoesLinha
+                              onEditar={() =>
+                                setEdSetor({
+                                  id: s.id,
+                                  nome: s.nome,
+                                  quartos: String(s.quartos),
+                                  leitosPorQuarto: String(s.leitosPorQuarto),
+                                })
+                              }
+                              onRemover={() => remover("setoresInternacao", s.id)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ),
+                    )}
                     <TableRow>
                       <TableCell colSpan={3} className="font-medium">
                         Dimensionamento total de leitos de internação
@@ -604,6 +873,11 @@ function CadastroPage() {
                   </div>
                 </div>
 
+                <p className="text-sm text-muted-foreground">
+                  Exibindo apenas os registros de <span className="font-medium">{uc.tipo}</span>.
+                  Altere o campo “Tipo” para ver os dados da outra modalidade.
+                </p>
+
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -611,35 +885,106 @@ function CadastroPage() {
                       <TableHead>Perfil</TableHead>
                       <TableHead>Unidade</TableHead>
                       <TableHead className="text-right">Leitos</TableHead>
-                      <TableHead className="w-24" />
+                      <TableHead className="w-44" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {dados.unidadesCriticas.map((u) => (
-                      <TableRow key={u.id}>
-                        <TableCell>
-                          <Badge variant={u.tipo === "UTI" ? "default" : "secondary"}>{u.tipo}</Badge>
-                        </TableCell>
-                        <TableCell>{u.perfil}</TableCell>
-                        <TableCell className="font-medium">{u.nome}</TableCell>
-                        <TableCell className="text-right font-medium">{u.leitos}</TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => remover("unidadesCriticas", u.id)}
-                          >
-                            Remover
-                          </Button>
+                    {unidadesFiltradas.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-muted-foreground">
+                          Nenhuma {uc.tipo} cadastrada.
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )}
+                    {unidadesFiltradas.map((u) =>
+                      edUc?.id === u.id ? (
+                        <TableRow key={u.id}>
+                          <TableCell>
+                            <Select
+                              value={edUc.tipo}
+                              onValueChange={(v) =>
+                                setEdUc({ ...edUc, tipo: v as TipoUnidadeCritica })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="UTI">UTI</SelectItem>
+                                <SelectItem value="UCI">UCI</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <Select
+                              value={edUc.perfil}
+                              onValueChange={(v) =>
+                                setEdUc({ ...edUc, perfil: v as PerfilUnidadeCritica })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {PERFIS_UNIDADE_CRITICA.map((p) => (
+                                  <SelectItem key={p} value={p}>
+                                    {p}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={edUc.nome}
+                              onChange={(ev) => setEdUc({ ...edUc, nome: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              min={1}
+                              value={edUc.leitos}
+                              onChange={(ev) => setEdUc({ ...edUc, leitos: ev.target.value })}
+                            />
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AcoesEdicao onSalvar={salvarUc} onCancelar={() => setEdUc(null)} />
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        <TableRow key={u.id}>
+                          <TableCell>
+                            <Badge variant={u.tipo === "UTI" ? "default" : "secondary"}>
+                              {u.tipo}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{u.perfil}</TableCell>
+                          <TableCell className="font-medium">{u.nome}</TableCell>
+                          <TableCell className="text-right font-medium">{u.leitos}</TableCell>
+                          <TableCell className="text-right">
+                            <AcoesLinha
+                              onEditar={() =>
+                                setEdUc({
+                                  id: u.id,
+                                  tipo: u.tipo,
+                                  perfil: u.perfil,
+                                  nome: u.nome,
+                                  leitos: String(u.leitos),
+                                })
+                              }
+                              onRemover={() => remover("unidadesCriticas", u.id)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ),
+                    )}
                     <TableRow>
                       <TableCell colSpan={3} className="font-medium">
-                        Total de leitos críticos (UTI + UCI)
+                        Total de leitos de {uc.tipo}
                       </TableCell>
                       <TableCell className="text-right font-semibold">
-                        {totais.uti + totais.uci}
+                        {uc.tipo === "UTI" ? totais.uti : totais.uci}
                       </TableCell>
                       <TableCell />
                     </TableRow>
