@@ -178,7 +178,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      empresa_codigo: "dom-luiz-gonzaga" | "humberto-lucena" | "distrital-belem"
+      empresa_codigo:
+        | "dom-luiz-gonzaga"
+        | "humberto-lucena"
+        | "distrital-belem"
+        | "guarabira"
+        | "solanea"
+        | "mamanguape"
+        | "arlinda-marques"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -310,6 +317,10 @@ export const Constants = {
         "dom-luiz-gonzaga",
         "humberto-lucena",
         "distrital-belem",
+        "guarabira",
+        "solanea",
+        "mamanguape",
+        "arlinda-marques",
       ],
     },
   },
