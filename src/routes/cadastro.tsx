@@ -304,6 +304,92 @@ function CadastroPage() {
     }
   };
 
+  const salvarEsp = async () => {
+    if (!edEsp) return;
+    const nome = edEsp.nome.trim();
+    if (nome.length < 3) return toast.error("Informe a especialidade (mínimo 3 caracteres).");
+    const observacao = edEsp.observacao.trim() || null;
+    try {
+      await atualizarEspecialidade(edEsp.id, { nome, observacao });
+      setDados((d) => ({
+        ...d,
+        especialidades: d.especialidades.map((e) =>
+          e.id === edEsp.id ? { ...e, nome, observacao } : e,
+        ),
+      }));
+      setEdEsp(null);
+      toast.success("Especialidade atualizada.");
+    } catch {
+      toast.error("Erro ao atualizar a especialidade.");
+    }
+  };
+
+  const salvarArea = async () => {
+    if (!edArea) return;
+    const leitos = numero(edArea.leitos);
+    if (leitos < 1) return toast.error("Quantitativo de leitos deve ser maior que zero.");
+    if (edArea.tipo === "Outra área assistencial" && edArea.descricao.trim().length < 3)
+      return toast.error("Descreva a área assistencial.");
+    const dadosArea = { tipo: edArea.tipo, descricao: edArea.descricao.trim(), leitos };
+    try {
+      await atualizarArea(edArea.id, dadosArea);
+      setDados((d) => ({
+        ...d,
+        areasEmergencia: d.areasEmergencia.map((a) =>
+          a.id === edArea.id ? { ...a, ...dadosArea } : a,
+        ),
+      }));
+      setEdArea(null);
+      toast.success("Área atualizada.");
+    } catch {
+      toast.error("Erro ao atualizar a área.");
+    }
+  };
+
+  const salvarSetor = async () => {
+    if (!edSetor) return;
+    const quartos = numero(edSetor.quartos);
+    const lpq = numero(edSetor.leitosPorQuarto);
+    if (edSetor.nome.trim().length < 3) return toast.error("Informe o nome do setor/unidade.");
+    if (quartos < 1) return toast.error("Quantitativo de quartos deve ser maior que zero.");
+    if (lpq < 1) return toast.error("Leitos por quarto deve ser maior que zero.");
+    const novo = { nome: edSetor.nome.trim(), quartos, leitosPorQuarto: lpq };
+    try {
+      await atualizarSetor(edSetor.id, novo);
+      setDados((d) => ({
+        ...d,
+        setoresInternacao: d.setoresInternacao.map((s) =>
+          s.id === edSetor.id ? { ...s, ...novo } : s,
+        ),
+      }));
+      setEdSetor(null);
+      toast.success("Setor atualizado.");
+    } catch {
+      toast.error("Erro ao atualizar o setor.");
+    }
+  };
+
+  const salvarUc = async () => {
+    if (!edUc) return;
+    const leitos = numero(edUc.leitos);
+    if (edUc.nome.trim().length < 3) return toast.error("Informe a identificação da unidade.");
+    if (leitos < 1) return toast.error("Quantitativo de leitos deve ser maior que zero.");
+    const nova = { tipo: edUc.tipo, perfil: edUc.perfil, nome: edUc.nome.trim(), leitos };
+    try {
+      await atualizarUnidadeCritica(edUc.id, nova);
+      setDados((d) => ({
+        ...d,
+        unidadesCriticas: d.unidadesCriticas.map((u) => (u.id === edUc.id ? { ...u, ...nova } : u)),
+      }));
+      setEdUc(null);
+      toast.success("Unidade atualizada.");
+    } catch {
+      toast.error("Erro ao atualizar a unidade.");
+    }
+  };
+
+
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
