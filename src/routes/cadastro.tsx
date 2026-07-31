@@ -66,33 +66,20 @@ export const Route = createFileRoute("/cadastro")({
 function Indicador({
   rotulo,
   valor,
-  itens = [],
 }: {
   rotulo: string;
   valor: number | string;
-  itens?: { chave: string; rotulo: string; valor: string | number }[];
 }) {
   return (
     <Card className="h-full">
       <CardContent className="p-5">
         <p className="text-xs tracking-wide text-muted-foreground uppercase">{rotulo}</p>
         <p className="mt-2 text-3xl font-semibold">{valor}</p>
-        <ul className="mt-3 max-h-32 space-y-1 overflow-y-auto text-xs">
-          {itens.length === 0 ? (
-            <li className="text-muted-foreground">Nenhum registro cadastrado.</li>
-          ) : (
-            itens.map((i) => (
-              <li key={i.chave} className="flex items-center justify-between gap-2">
-                <span className="truncate text-muted-foreground">{i.rotulo}</span>
-                <span className="font-medium tabular-nums">{i.valor}</span>
-              </li>
-            ))
-          )}
-        </ul>
       </CardContent>
     </Card>
   );
 }
+
 
 
 const numero = (v: string) => Math.max(0, Math.floor(Number(v) || 0));
@@ -148,36 +135,6 @@ function CadastroPage() {
     [dados],
   );
 
-  const resumo = useMemo(() => {
-    const criticas = (tipo: TipoUnidadeCritica) =>
-      dados.unidadesCriticas
-        .filter((u) => u.tipo === tipo)
-        .map((u) => ({
-          chave: u.id,
-          rotulo: `${u.nome} (${u.perfil})`,
-          valor: `${u.leitos} leito(s)`,
-        }));
-    return {
-      emergencia: dados.areasEmergencia.map((a) => ({
-        chave: a.id,
-        rotulo: a.descricao ? `${a.tipo} — ${a.descricao}` : a.tipo,
-        valor: `${a.leitos} leito(s)`,
-      })),
-      internacao: dados.setoresInternacao.map((s) => ({
-        chave: s.id,
-        rotulo: `${s.nome} · ${s.quartos}q × ${s.leitosPorQuarto}`,
-        valor: `${leitosDoSetor(s)} leito(s)`,
-      })),
-      uti: criticas("UTI"),
-      uci: criticas("UCI"),
-      geral: [
-        { chave: "esp", rotulo: "Especialidades", valor: dados.especialidades.length },
-        { chave: "are", rotulo: "Áreas da emergência", valor: dados.areasEmergencia.length },
-        { chave: "set", rotulo: "Setores de internação", valor: dados.setoresInternacao.length },
-        { chave: "uc", rotulo: "Unidades críticas", valor: dados.unidadesCriticas.length },
-      ],
-    };
-  }, [dados]);
 
 
   const sair = useCallback(async () => {
@@ -318,12 +275,13 @@ function CadastroPage() {
 
       <main className="mx-auto max-w-6xl space-y-8 px-6 py-8">
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          <Indicador rotulo="Leitos emergência" valor={totais.emergencia} itens={resumo.emergencia} />
-          <Indicador rotulo="Leitos internação" valor={totais.internacao} itens={resumo.internacao} />
-          <Indicador rotulo="Leitos UTI" valor={totais.uti} itens={resumo.uti} />
-          <Indicador rotulo="Leitos UCI" valor={totais.uci} itens={resumo.uci} />
-          <Indicador rotulo="Total geral" valor={totais.geral} itens={resumo.geral} />
+          <Indicador rotulo="Leitos emergência" valor={totais.emergencia} />
+          <Indicador rotulo="Leitos internação" valor={totais.internacao} />
+          <Indicador rotulo="Leitos UTI" valor={totais.uti} />
+          <Indicador rotulo="Leitos UCI" valor={totais.uci} />
+          <Indicador rotulo="Total geral" valor={totais.geral} />
         </section>
+
 
         <Tabs defaultValue="emergencia">
           <TabsList>
