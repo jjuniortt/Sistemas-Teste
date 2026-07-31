@@ -525,7 +525,7 @@ function CadastroPage() {
 
           {/* ---------------- UTI / UCI ---------------- */}
           <TabsContent value="criticos" className="space-y-6 pt-6">
-            <CardsCriticos dados={dados} />
+            
             <Card>
               <CardHeader>
                 <CardTitle>Terapia intensiva e cuidados intermediários</CardTitle>
