@@ -32,6 +32,10 @@ import {
   type TipoUnidadeCritica,
 } from "@/lib/cadastro-store";
 import {
+  atualizarArea,
+  atualizarEspecialidade,
+  atualizarSetor,
+  atualizarUnidadeCritica,
   carregarCadastro,
   inserirArea,
   inserirEspecialidade,
