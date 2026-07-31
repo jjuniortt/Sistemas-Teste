@@ -148,6 +148,38 @@ function CadastroPage() {
     [dados],
   );
 
+  const resumo = useMemo(() => {
+    const criticas = (tipo: TipoUnidadeCritica) =>
+      dados.unidadesCriticas
+        .filter((u) => u.tipo === tipo)
+        .map((u) => ({
+          chave: u.id,
+          rotulo: `${u.nome} (${u.perfil})`,
+          valor: `${u.leitos} leito(s)`,
+        }));
+    return {
+      emergencia: dados.areasEmergencia.map((a) => ({
+        chave: a.id,
+        rotulo: a.descricao ? `${a.tipo} — ${a.descricao}` : a.tipo,
+        valor: `${a.leitos} leito(s)`,
+      })),
+      internacao: dados.setoresInternacao.map((s) => ({
+        chave: s.id,
+        rotulo: `${s.nome} · ${s.quartos}q × ${s.leitosPorQuarto}`,
+        valor: `${leitosDoSetor(s)} leito(s)`,
+      })),
+      uti: criticas("UTI"),
+      uci: criticas("UCI"),
+      geral: [
+        { chave: "esp", rotulo: "Especialidades", valor: dados.especialidades.length },
+        { chave: "are", rotulo: "Áreas da emergência", valor: dados.areasEmergencia.length },
+        { chave: "set", rotulo: "Setores de internação", valor: dados.setoresInternacao.length },
+        { chave: "uc", rotulo: "Unidades críticas", valor: dados.unidadesCriticas.length },
+      ],
+    };
+  }, [dados]);
+
+
   const sair = useCallback(async () => {
     await supabase.auth.signOut();
     navigate({ to: "/" });
