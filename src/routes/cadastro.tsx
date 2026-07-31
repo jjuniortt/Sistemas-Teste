@@ -40,7 +40,7 @@ import {
   removerRegistro,
 } from "@/lib/cadastro-db";
 import { exportarCSV, exportarJSON, exportarPDF } from "@/lib/exportar";
-import { CardsCriticos, CardsEmergencia, CardsInternacao } from "@/components/cards-resumo";
+
 
 export const Route = createFileRoute("/cadastro")({
   head: () => ({
