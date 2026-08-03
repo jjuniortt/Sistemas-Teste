@@ -237,7 +237,7 @@ function Login() {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-gray-500 text-white hover:bg-[#517C0F] transition-colors duration-200"
+                  className="w-full bg-[#DCE0DC] text-foreground hover:bg-gray-500 transition-colors duration-200"
                   disabled={enviando}
                 >
                   Entrar
@@ -291,7 +291,10 @@ function Login() {
             <span className="h-px flex-1 bg-border" />
           </div>
 
-          <Button variant="outline" className="w-full" onClick={entrarComGoogle}>
+          <Button
+            className="w-full bg-[#DCE0DC] text-foreground hover:bg-gray-500 transition-colors duration-200"
+            onClick={entrarComGoogle}
+          >
             Continuar com Google
           </Button>
         </div>
