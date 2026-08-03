@@ -153,14 +153,6 @@ function Login() {
           </div>
         </div>
 
-        <div className="relative bg-background px-8 py-5">
-          <img
-            src={logosRodape.url}
-            alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
-            className="mx-auto h-10 w-full max-w-xl object-contain"
-            loading="lazy"
-          />
-        </div>
       </section>
 
 
@@ -184,7 +176,7 @@ function Login() {
 
           <div className="space-y-2">
             <Label htmlFor="empresa">Empresa (hospital) *</Label>
-            <Select value={empresa} onValueChange={(v) => setEmpresa(v as EmpresaCodigo)}>
+            <Select value={empresa || undefined} onValueChange={(v) => setEmpresa(v as EmpresaCodigo)}>
               <SelectTrigger id="empresa">
                 <SelectValue placeholder="Selecione o hospital" />
               </SelectTrigger>
@@ -297,6 +289,15 @@ function Login() {
           >
             Continuar com Google
           </Button>
+
+          <div className="flex justify-center pt-6">
+            <img
+              src={logosRodape.url}
+              alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
+              className="h-12 w-full max-w-md object-contain"
+              loading="lazy"
+            />
+          </div>
         </div>
       </section>
     </main>
