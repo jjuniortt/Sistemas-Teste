@@ -176,7 +176,7 @@ function Login() {
 
           <div className="space-y-2">
             <Label htmlFor="empresa">Empresa (hospital) *</Label>
-            <Select value={empresa} onValueChange={(v) => setEmpresa(v as EmpresaCodigo)}>
+            <Select value={empresa || undefined} onValueChange={(v) => setEmpresa(v as EmpresaCodigo)}>
               <SelectTrigger id="empresa">
                 <SelectValue placeholder="Selecione o hospital" />
               </SelectTrigger>
