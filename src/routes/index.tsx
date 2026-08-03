@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import logoAghUse from "@/assets/aghuse2-2-2.png.asset.json";
+import logosRodape from "@/assets/logos-rodape.png.asset.json";
 import {
   EMPRESAS,
   definirEmpresaAtiva,
@@ -119,32 +120,47 @@ function Login() {
 
   return (
     <main className="grid min-h-screen lg:grid-cols-2">
-      <section className="hidden flex-col justify-between bg-triage-green p-12 text-primary-foreground lg:flex">
-        <p className="text-sm font-medium tracking-[0.2em] uppercase opacity-90">
-          Parametrização assistencial
-        </p>
-        <div className="space-y-6">
-          <h1 className="text-5xl leading-tight font-semibold">
-            Estrutura física e fluxo assistencial em um único cadastro
-          </h1>
-          <div className="flex flex-wrap gap-3 text-sm font-medium">
-            <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Emergência</span>
-            <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Internação</span>
-            <span className="rounded-md bg-primary-foreground/15 px-3 py-1">UTI e UCI</span>
-          </div>
-          <p className="max-w-md text-base opacity-90">
-            Emergência, internação, UTIs e UCIs organizados conforme a solicitação de informações
-            para parametrização do sistema.
+      <section className="relative hidden flex-col overflow-hidden bg-aghuse-green text-primary-foreground lg:flex">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-40"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='208' viewBox='0 0 120 208'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.35' stroke-width='2'%3E%3Cpath d='M60 4 112 34 112 94 60 124 8 94 8 34Z'/%3E%3Cpath d='M0 108 52 138 52 198 0 228'/%3E%3Cpath d='M120 108 68 138 68 198 120 228'/%3E%3C/g%3E%3Cg fill='%23ffffff' fill-opacity='0.18'%3E%3Ccircle cx='60' cy='150' r='4'/%3E%3Cpath d='M104 150h10v-10h10v10h10v10h-10v10h-10v-10h-10z'/%3E%3C/g%3E%3C/svg%3E\")",
+            backgroundSize: "180px 312px",
+          }}
+        />
+
+        <div className="relative flex flex-1 flex-col justify-between p-12">
+          <p className="text-sm font-medium tracking-[0.2em] uppercase opacity-90">
+            Parametrização assistencial
           </p>
+          <div className="space-y-6">
+            <h1 className="text-5xl leading-tight font-semibold">
+              Estrutura física e fluxo assistencial em um único cadastro
+            </h1>
+            <div className="flex flex-wrap gap-3 text-sm font-medium">
+              <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Emergência</span>
+              <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Internação</span>
+              <span className="rounded-md bg-primary-foreground/15 px-3 py-1">UTI e UCI</span>
+            </div>
+            <p className="max-w-md text-base opacity-90">
+              Emergência, internação, UTIs e UCIs organizados conforme a solicitação de informações
+              para parametrização do sistema.
+            </p>
+          </div>
         </div>
-        <div className="flex justify-start">
+
+        <div className="relative bg-background px-8 py-5">
           <img
-            src={logoAghUse.url}
-            alt="AGHUse — Secretaria de Estado da Saúde, Governo da Paraíba"
-            className="h-24 w-auto rounded-md bg-background/95 p-3"
+            src={logosRodape.url}
+            alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
+            className="mx-auto h-10 w-full max-w-xl object-contain"
+            loading="lazy"
           />
         </div>
       </section>
+
 
 
       <section className="flex items-center justify-center p-6">
