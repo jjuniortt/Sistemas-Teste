@@ -289,6 +289,15 @@ function Login() {
           >
             Continuar com Google
           </Button>
+
+          <div className="flex justify-center pt-6">
+            <img
+              src={logosRodape.url}
+              alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
+              className="h-12 w-full max-w-md object-contain"
+              loading="lazy"
+            />
+          </div>
         </div>
       </section>
     </main>
