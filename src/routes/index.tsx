@@ -132,8 +132,10 @@ function Login() {
         />
 
         <div className="relative flex flex-1 flex-col justify-start p-12">
-          <p className="text-[11px] font-medium tracking-[0.2em] uppercase opacity-90 whitespace-pre-line">
-            PARAMETRIZAÇÃO ASSISTENCIAL{"\n"}GERENCIA DE TECNOLOGIA DA INFORMAÇÃO (GTI)
+          <p className="font-medium tracking-[0.2em] uppercase opacity-90 whitespace-pre-line">
+            <span className="text-sm">PARAMETRIZAÇÃO ASSISTENCIAL</span>
+            {"\n"}
+            <span className="text-[11px]">GERENCIA DE TECNOLOGIA DA INFORMAÇÃO (GTI)</span>
           </p>
           <div className="mt-16 space-y-6">
             <h1 className="text-5xl font-semibold leading-[1.15]">
