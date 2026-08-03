@@ -140,9 +140,9 @@ function Login() {
               Estrutura física e fluxo assistencial em um único cadastro
             </h1>
             <div className="flex flex-wrap gap-3 text-sm font-medium">
-              <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Emergência</span>
-              <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Internação</span>
-              <span className="rounded-md bg-primary-foreground/15 px-3 py-1">UTI e UCI</span>
+              <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Setor Emergência</span>
+              <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Setor Internação</span>
+              <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Setor UTI e UCI</span>
             </div>
             <p className="max-w-md text-base leading-snug opacity-90">
               O objetivo dessa ferramenta é realizar a coleta dos dados necessários para
