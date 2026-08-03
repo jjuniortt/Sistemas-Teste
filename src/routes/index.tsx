@@ -119,25 +119,33 @@ function Login() {
 
   return (
     <main className="grid min-h-screen lg:grid-cols-2">
-      <section className="hidden flex-col justify-between bg-primary p-12 text-primary-foreground lg:flex">
-        <p className="text-sm font-medium tracking-[0.2em] uppercase opacity-80">
+      <section className="hidden flex-col justify-between bg-triage-green p-12 text-primary-foreground lg:flex">
+        <p className="text-sm font-medium tracking-[0.2em] uppercase opacity-90">
           Parametrização assistencial
         </p>
         <div className="space-y-6">
           <h1 className="text-5xl leading-tight font-semibold">
             Estrutura física e fluxo assistencial em um único cadastro
           </h1>
-          <p className="max-w-md text-base opacity-80">
+          <div className="flex flex-wrap gap-3 text-sm font-medium">
+            <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Emergência</span>
+            <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Internação</span>
+            <span className="rounded-md bg-primary-foreground/15 px-3 py-1">UTI e UCI</span>
+          </div>
+          <p className="max-w-md text-base opacity-90">
             Emergência, internação, UTIs e UCIs organizados conforme a solicitação de informações
             para parametrização do sistema.
           </p>
         </div>
-        <div className="flex gap-8 text-sm opacity-80">
-          <span>Emergência</span>
-          <span>Internação</span>
-          <span>UTI / UCI</span>
+        <div className="flex justify-start">
+          <img
+            src={logoAghUse.url}
+            alt="AGHUse — Secretaria de Estado da Saúde, Governo da Paraíba"
+            className="h-24 w-auto rounded-md bg-background/95 p-3"
+          />
         </div>
       </section>
+
 
       <section className="flex items-center justify-center p-6">
         <div className="w-full max-w-sm space-y-6">
