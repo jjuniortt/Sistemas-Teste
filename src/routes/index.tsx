@@ -229,7 +229,7 @@ function Login() {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-[#DCE0DC] text-foreground shadow-sm hover:shadow-md hover:brightness-95 hover:scale-[1.01] transition-all duration-200"
+                  className="w-full bg-[#DCE0DC] text-foreground shadow-sm hover:bg-[#F5F5F5] hover:shadow-md hover:scale-[1.01] transition-all duration-200"
                   disabled={enviando}
                 >
                   Entrar
@@ -284,7 +284,7 @@ function Login() {
           </div>
 
           <Button
-            className="w-full bg-[#DCE0DC] text-foreground shadow-sm hover:shadow-md hover:brightness-95 hover:scale-[1.01] transition-all duration-200"
+            className="w-full bg-[#DCE0DC] text-foreground shadow-sm hover:bg-[#F5F5F5] hover:shadow-md hover:scale-[1.01] transition-all duration-200"
             onClick={entrarComGoogle}
           >
             Continuar com Google
