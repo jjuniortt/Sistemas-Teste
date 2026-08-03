@@ -131,11 +131,11 @@ function Login() {
           }}
         />
 
-        <div className="relative flex flex-1 flex-col justify-between p-12">
+        <div className="relative flex flex-1 flex-col justify-start p-12">
           <p className="text-sm font-medium tracking-[0.2em] uppercase opacity-90">
             Parametrização assistencial
           </p>
-          <div className="space-y-6">
+          <div className="mt-16 space-y-6">
             <h1 className="text-5xl leading-tight font-semibold">
               Estrutura física e fluxo assistencial em um único cadastro
             </h1>
