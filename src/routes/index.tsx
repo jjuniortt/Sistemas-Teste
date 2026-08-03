@@ -147,7 +147,7 @@ function Login() {
               <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Setor UTI e UCI</span>
             </div>
             <p className="max-w-md text-base leading-snug opacity-90 whitespace-pre-line">
-              {"\n\n"}O objetivo dessa ferramenta é realizar a coleta dos dados necessários para
+              {"\n"}O objetivo dessa ferramenta é realizar a coleta dos dados necessários para
               parametrização do AGHUse.
             </p>
           </div>
