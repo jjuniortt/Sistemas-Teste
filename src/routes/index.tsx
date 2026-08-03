@@ -144,7 +144,7 @@ function Login() {
               <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Internação</span>
               <span className="rounded-md bg-primary-foreground/15 px-3 py-1">UTI e UCI</span>
             </div>
-            <p className="max-w-md text-base opacity-90">
+            <p className="max-w-md text-base leading-snug opacity-90">
               O objetivo dessa ferramenta é realizar a coleta dos dados necessários para
               parametrização do AGHUse.
             </p>
