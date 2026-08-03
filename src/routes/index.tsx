@@ -145,8 +145,8 @@ function Login() {
               <span className="rounded-md bg-primary-foreground/15 px-3 py-1">UTI e UCI</span>
             </div>
             <p className="max-w-md text-base opacity-90">
-              Emergência, internação, UTIs e UCIs organizados conforme a solicitação de informações
-              para parametrização do sistema.
+              O objetivo dessa ferramenta é facilitar a coleta dos dados para parametrização do
+              AGHUse nas unidades de saúde no Estado da Paraíba.
             </p>
           </div>
         </div>
