@@ -136,7 +136,7 @@ function Login() {
             Parametrização assistencial
           </p>
           <div className="mt-16 space-y-6">
-            <h1 className="text-5xl leading-tight font-semibold">
+            <h1 className="text-5xl font-semibold leading-[1.15]">
               Estrutura física e fluxo assistencial em um único cadastro
             </h1>
             <div className="flex flex-wrap gap-3 text-sm font-medium">
