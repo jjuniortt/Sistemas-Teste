@@ -235,7 +235,11 @@ function Login() {
                     onChange={(e) => setSenha(e.target.value)}
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={enviando}>
+                <Button
+                  type="submit"
+                  className="w-full bg-gray-500 text-white hover:bg-[#517C0F] transition-colors duration-200"
+                  disabled={enviando}
+                >
                   Entrar
                 </Button>
               </form>
