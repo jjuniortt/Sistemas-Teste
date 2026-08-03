@@ -132,7 +132,7 @@ function Login() {
         />
 
         <div className="relative flex flex-1 flex-col justify-start p-12">
-          <p className="text-sm font-medium tracking-[0.2em] uppercase opacity-90 whitespace-pre-line">
+          <p className="text-[11px] font-medium tracking-[0.2em] uppercase opacity-90 whitespace-pre-line">
             PARAMETRIZAÇÃO ASSISTENCIAL{"\n"}GERENCIA DE TECNOLOGIA DA INFORMAÇÃO (GTI)
           </p>
           <div className="mt-16 space-y-6">
