@@ -153,14 +153,6 @@ function Login() {
           </div>
         </div>
 
-        <div className="relative bg-background px-8 py-5">
-          <img
-            src={logosRodape.url}
-            alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
-            className="mx-auto h-10 w-full max-w-xl object-contain"
-            loading="lazy"
-          />
-        </div>
       </section>
 
 
