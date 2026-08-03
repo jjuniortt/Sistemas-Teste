@@ -39,7 +39,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Login | Cadastro de Estrutura Assistencial" },
       {
         property: "og:description",
-        content: "Acesso ao sistema de parametrização da estrutura assistencial hospitalar.",
+        content: "Acesso ao sistema de cadastro e parametrização da estrutura assistencial hospitalar: emergência, internação, UTI e UCI.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

@@ -79,19 +79,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Cadastro da Estrutura Assistencial Hospitalar" },
+      { title: "Login | Cadastro de Estrutura Assistencial" },
       {
         name: "description",
         content:
-          "Sistema de cadastro e parametrização da estrutura assistencial hospitalar: emergência, internação, UTI e UCI.",
+          "Acesso ao sistema de cadastro e parametrização da estrutura assistencial hospitalar: emergência, internação, UTI e UCI.",
       },
-      { property: "og:title", content: "Cadastro da Estrutura Assistencial Hospitalar" },
+      { property: "og:title", content: "Login | Cadastro de Estrutura Assistencial" },
       {
         property: "og:description",
-        content: "Parametrização de emergência, internação, UTIs e UCIs.",
+        content: "Acesso ao sistema de cadastro e parametrização da estrutura assistencial hospitalar: emergência, internação, UTI e UCI.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Login | Cadastro de Estrutura Assistencial" },
+      { name: "twitter:description", content: "Acesso ao sistema de cadastro e parametrização da estrutura assistencial hospitalar: emergência, internação, UTI e UCI." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5f6713e1-5d5f-4af2-a4c6-228e59d1aa00/id-preview-29d1fd1e--66736177-0a8b-45ad-8bc8-489176dc9932.lovable.app-1785785957363.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5f6713e1-5d5f-4af2-a4c6-228e59d1aa00/id-preview-29d1fd1e--66736177-0a8b-45ad-8bc8-489176dc9932.lovable.app-1785785957363.png" },
     ],
 
     links: [
@@ -99,7 +103,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
 
