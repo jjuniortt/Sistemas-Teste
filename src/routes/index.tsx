@@ -145,8 +145,8 @@ function Login() {
               <span className="rounded-md bg-primary-foreground/15 px-3 py-1">UTI e UCI</span>
             </div>
             <p className="max-w-md text-base opacity-90">
-              O objetivo dessa ferramenta é facilitar a coleta dos dados para parametrização do
-              AGHUse nas unidades de saúde no Estado da Paraíba.
+              O objetivo dessa ferramenta é realizar a coleta dos dados necessários para
+              parametrização do AGHUse.
             </p>
           </div>
         </div>
