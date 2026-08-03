@@ -136,7 +136,7 @@ function Login() {
             Parametrização assistencial
           </p>
           <div className="mt-16 space-y-6">
-            <h1 className="text-5xl leading-tight font-semibold">
+            <h1 className="text-5xl font-semibold leading-[1.15]">
               Estrutura física e fluxo assistencial em um único cadastro
             </h1>
             <div className="flex flex-wrap gap-3 text-sm font-medium">
@@ -144,7 +144,7 @@ function Login() {
               <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Internação</span>
               <span className="rounded-md bg-primary-foreground/15 px-3 py-1">UTI e UCI</span>
             </div>
-            <p className="max-w-md text-base opacity-90">
+            <p className="max-w-md text-base leading-snug opacity-90">
               O objetivo dessa ferramenta é realizar a coleta dos dados necessários para
               parametrização do AGHUse.
             </p>
