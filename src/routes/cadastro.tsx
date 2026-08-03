@@ -82,10 +82,11 @@ function Indicador({
 }) {
   return (
     <Card className="h-full">
-      <CardContent className="p-5">
+      <CardContent className="p-5 text-center">
         <p className="text-xs tracking-wide text-muted-foreground uppercase">{rotulo}</p>
         <p className="mt-2 text-3xl font-semibold">{valor}</p>
       </CardContent>
+
     </Card>
   );
 }
