@@ -82,10 +82,11 @@ function Indicador({
 }) {
   return (
     <Card className="h-full">
-      <CardContent className="p-5">
+      <CardContent className="p-5 text-center">
         <p className="text-xs tracking-wide text-muted-foreground uppercase">{rotulo}</p>
         <p className="mt-2 text-3xl font-semibold">{valor}</p>
       </CardContent>
+
     </Card>
   );
 }
@@ -411,7 +412,8 @@ function CadastroPage() {
 
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen overflow-x-hidden bg-background">
+
       <header className="border-b bg-card">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
 
@@ -455,7 +457,12 @@ function CadastroPage() {
         </p>
       )}
 
-      <main className="mx-auto max-w-6xl space-y-8 px-6 py-8">
+      <main className="mx-auto w-full max-w-6xl space-y-8 overflow-x-hidden px-6 py-8">
+        <p className="rounded-md border border-border bg-muted/40 p-4 text-center text-sm text-muted-foreground">
+          Observação: todo o formulário precisa ser preenchido corretamente a partir dos campos
+          solicitados nos setores (Setor de Emergência, Setor de Internação e Setor UTI e UCI).
+        </p>
+
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <Indicador rotulo="Leitos emergência" valor={totais.emergencia} />
           <Indicador rotulo="Leitos internação" valor={totais.internacao} />
@@ -467,10 +474,11 @@ function CadastroPage() {
 
         <Tabs defaultValue="emergencia">
           <TabsList>
-            <TabsTrigger value="emergencia">1. Emergência</TabsTrigger>
-            <TabsTrigger value="internacao">2. Internação</TabsTrigger>
-            <TabsTrigger value="criticos">3. UTI e UCI</TabsTrigger>
+            <TabsTrigger value="emergencia">1. Setor de Emergência</TabsTrigger>
+            <TabsTrigger value="internacao">2. Setor de Internação</TabsTrigger>
+            <TabsTrigger value="criticos">3. Setor UTI e UCI</TabsTrigger>
           </TabsList>
+
 
           {/* ---------------- Emergência ---------------- */}
           <TabsContent value="emergencia" className="space-y-6 pt-6">
