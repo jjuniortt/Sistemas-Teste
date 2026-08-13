@@ -112,6 +112,7 @@ function Login() {
       toast.success("Conta criada. Confirme o e-mail enviado para concluir o acesso.");
       return;
     }
+    toast.success("Usuário Logado Com Sucesso!");
     irParaDestino();
   };
 
@@ -122,8 +123,10 @@ function Login() {
     });
     if (result.error) return toast.error("Falha no login com Google.");
     if (result.redirected) return;
+    toast.success("Usuário Logado Com Sucesso!");
     irParaDestino();
   };
+
 
   return (
     <main className="grid min-h-screen lg:grid-cols-2">
