@@ -167,19 +167,19 @@ function Login() {
 
 
 
-      <section className="flex items-center justify-center px-4 py-8 sm:px-6 sm:py-10">
-        <div className="w-full max-w-sm space-y-3">
+      <section className="login-py flex items-center justify-center px-4 sm:px-6">
+        <div className="login-gap w-full max-w-sm flex flex-col">
 
           <div className="flex justify-center">
             <img
               src={logoAghUse.url}
               alt="AGHUse — Secretaria de Estado da Saúde, Governo da Paraíba"
-              className="h-20 w-auto sm:h-24"
+              className="login-logo-top w-auto"
             />
           </div>
           <header className="text-center">
-            <h2 className="text-xl font-semibold">Sistema de Cadastro</h2>
-            <p className="text-xs text-muted-foreground">
+            <h2 className="login-title font-semibold">Sistema de Cadastro</h2>
+            <p className="login-desc text-muted-foreground">
               Entre com sua conta para realizar o cadastro ou carregar sua parametrização salva.
             </p>
           </header>
@@ -188,7 +188,7 @@ function Login() {
           <div className="space-y-1.5">
             <Label htmlFor="empresa" className="text-sm">Empresa (hospital) *</Label>
             <Select value={empresa || undefined} onValueChange={(v) => setEmpresa(v as EmpresaCodigo)}>
-              <SelectTrigger id="empresa" className="h-9">
+              <SelectTrigger id="empresa" className="login-input">
                 <SelectValue placeholder="Selecione o hospital" />
               </SelectTrigger>
               <SelectContent>
@@ -225,7 +225,7 @@ function Login() {
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-9"
+                    className="login-input"
                   />
                 </div>
                 <div className="space-y-1">
@@ -237,7 +237,7 @@ function Login() {
                     autoComplete="current-password"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
-                    className="h-9"
+                    className="login-input"
                   />
                 </div>
                 <Button
@@ -259,7 +259,7 @@ function Login() {
                     value={nome}
                     autoComplete="name"
                     onChange={(e) => setNome(e.target.value)}
-                    className="h-9"
+                    className="login-input"
                   />
                 </div>
                 <div className="space-y-1">
@@ -271,7 +271,7 @@ function Login() {
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-9"
+                    className="login-input"
                   />
                 </div>
                 <div className="space-y-1">
@@ -283,7 +283,7 @@ function Login() {
                     autoComplete="new-password"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
-                    className="h-9"
+                    className="login-input"
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={enviando}>
@@ -306,11 +306,11 @@ function Login() {
             Continuar com Google
           </Button>
 
-          <div className="flex justify-center -mt-1">
+          <div className="flex justify-center pt-1">
             <img
               src={logosRodape.url}
               alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
-              className="h-32 w-full max-w-lg object-contain sm:h-40"
+              className="login-logo-bottom w-full max-w-lg object-contain"
             />
           </div>
 
