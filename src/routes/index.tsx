@@ -25,9 +25,10 @@ import {
 } from "@/lib/empresas";
 
 export const Route = createFileRoute("/")({
-  validateSearch: (s: Record<string, unknown>) => ({
+  validateSearch: (s: Record<string, unknown>): { next?: string } => ({
     next: typeof s.next === "string" && s.next.startsWith("/") && !s.next.startsWith("//") ? s.next : undefined,
   }),
+
   head: () => ({
     meta: [
       { title: "Login | Cadastro de Estrutura Assistencial" },
@@ -63,7 +64,11 @@ function Login() {
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [enviando, setEnviando] = useState(false);
-  const [empresa, setEmpresa] = useState<EmpresaCodigo | "">(() => obterEmpresaAtiva() ?? "");
+  const [empresa, setEmpresa] = useState<EmpresaCodigo | "">("");
+
+  useEffect(() => {
+    setEmpresa(obterEmpresaAtiva() ?? "");
+  }, []);
 
   const validarEmpresa = () => {
     if (!empresa) {
@@ -86,8 +91,10 @@ function Login() {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: senha });
     setEnviando(false);
     if (error) return toast.error("Não foi possível entrar: " + error.message);
+    toast.success("Usuário Logado Com Sucesso!");
     irParaDestino();
   };
+
 
   const cadastrar = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,6 +112,7 @@ function Login() {
       toast.success("Conta criada. Confirme o e-mail enviado para concluir o acesso.");
       return;
     }
+    toast.success("Usuário Logado Com Sucesso!");
     irParaDestino();
   };
 
@@ -115,8 +123,10 @@ function Login() {
     });
     if (result.error) return toast.error("Falha no login com Google.");
     if (result.redirected) return;
+    toast.success("Usuário Logado Com Sucesso!");
     irParaDestino();
   };
+
 
   return (
     <main className="grid min-h-screen lg:grid-cols-2">
@@ -131,14 +141,14 @@ function Login() {
           }}
         />
 
-        <div className="relative flex flex-1 flex-col justify-start p-12">
+        <div className="relative flex flex-1 flex-col justify-center px-8 py-20 xl:px-14">
           <p className="font-bold tracking-[0.2em] uppercase opacity-90 whitespace-pre-line">
-            <span className="text-base">{"\n\n\n"}PARAMETRIZAÇÃO ASSISTENCIAL</span>
+            <span className="text-base">PARAMETRIZAÇÃO ASSISTENCIAL</span>
             {"\n"}
             <span className="text-xs">GERENCIA DE TECNOLOGIA DA INFORMAÇÃO (GTI)</span>
           </p>
-          <div className="mt-16 space-y-6">
-            <h1 className="text-5xl font-semibold leading-[1.15]">
+          <div className="mt-12 space-y-6">
+            <h1 className="text-4xl font-semibold leading-[1.15] xl:text-5xl">
               Estrutura física e fluxo assistencial em um único cadastro
             </h1>
             <div className="flex flex-wrap gap-3 text-sm font-medium">
@@ -146,8 +156,8 @@ function Login() {
               <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Setor Internação</span>
               <span className="rounded-md bg-primary-foreground/15 px-3 py-1">Setor UTI e UCI</span>
             </div>
-            <p className="max-w-md text-base leading-snug opacity-90 whitespace-pre-line">
-              {"\n"}O objetivo dessa ferramenta é realizar a coleta dos dados necessários para
+            <p className="max-w-md text-base leading-snug opacity-90">
+              O objetivo dessa ferramenta é realizar a coleta dos dados necessários para
               parametrização do AGHUse.
             </p>
           </div>
@@ -157,8 +167,9 @@ function Login() {
 
 
 
-      <section className="flex items-center justify-center p-6">
+      <section className="flex items-center justify-center px-4 py-14 sm:px-8 sm:py-20">
         <div className="w-full max-w-sm space-y-6">
+
           <div className="flex justify-center">
             <img
               src={logoAghUse.url}
@@ -290,14 +301,15 @@ function Login() {
             Continuar com Google
           </Button>
 
-          <div className="flex justify-center pt-6">
+          <div className="flex justify-center pt-8">
             <img
               src={logosRodape.url}
               alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
-              className="h-12 w-full max-w-md object-contain"
+              className="h-16 w-full max-w-lg object-contain sm:h-20"
               loading="lazy"
             />
           </div>
+
         </div>
       </section>
     </main>

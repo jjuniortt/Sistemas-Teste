@@ -81,10 +81,11 @@ function Indicador({
   valor: number | string;
 }) {
   return (
-    <Card className="h-full">
+    <Card className="h-full border-aghuse-green/25">
       <CardContent className="p-5 text-center">
         <p className="text-xs tracking-wide text-muted-foreground uppercase">{rotulo}</p>
-        <p className="mt-2 text-3xl font-semibold">{valor}</p>
+        <p className="mt-2 text-3xl font-semibold text-aghuse-green">{valor}</p>
+
       </CardContent>
 
     </Card>
@@ -415,27 +416,33 @@ function CadastroPage() {
     <div className="min-h-screen overflow-x-hidden bg-background">
 
       <header className="border-b bg-card">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between">
 
-          <div>
-            <h1 className="text-lg font-semibold">Cadastro da Estrutura Assistencial</h1>
-            <p className="text-sm text-muted-foreground">
+          <div className="min-w-0">
+            <h1 className="text-base font-semibold sm:text-lg">Cadastro da Estrutura Assistencial</h1>
+            <p className="truncate text-sm text-muted-foreground">
               {nomeEmpresa(empresa)}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="truncate text-xs text-muted-foreground">
               {user.email} — emergência, internação, UTI e UCI
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
 
-            <Button variant="outline" onClick={() => exportarCSV(dados)}>
+            <Button
+              className="bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep"
+              onClick={() => exportarCSV(dados)}
+            >
               Exportar CSV
             </Button>
-            <Button variant="outline" onClick={() => exportarJSON(dados)}>
+            <Button
+              className="bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep"
+              onClick={() => exportarJSON(dados)}
+            >
               Exportar JSON
             </Button>
             <Button
-              variant="outline"
+              className="bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep"
               onClick={() => {
                 if (!exportarPDF(dados, `${nomeEmpresa(empresa)} — ${user.email ?? ""}`))
                   toast.error("Permita pop-ups para visualizar o PDF.");
@@ -443,13 +450,17 @@ function CadastroPage() {
             >
               Exportar PDF
             </Button>
-            <Button variant="outline" onClick={sair}>
-
+            <Button
+              variant="outline"
+              className="border-destructive/40 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+              onClick={sair}
+            >
               Sair
             </Button>
           </div>
         </div>
       </header>
+
 
       {carregandoDados && (
         <p className="mx-auto max-w-6xl px-6 pt-6 text-sm text-muted-foreground">
@@ -457,13 +468,13 @@ function CadastroPage() {
         </p>
       )}
 
-      <main className="mx-auto w-full max-w-6xl space-y-8 overflow-x-hidden px-6 py-8">
-        <p className="rounded-md border border-border bg-muted/40 p-4 text-center text-sm text-muted-foreground">
+      <main className="mx-auto w-full max-w-6xl space-y-8 overflow-x-hidden px-4 py-8 sm:px-6">
+        <p className="rounded-md border border-aghuse-green/30 bg-aghuse-green/5 p-4 text-center text-sm text-muted-foreground">
           Observação: todo o formulário precisa ser preenchido corretamente a partir dos campos
           solicitados nos setores (Setor de Emergência, Setor de Internação e Setor UTI e UCI).
         </p>
 
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <section className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           <Indicador rotulo="Leitos emergência" valor={totais.emergencia} />
           <Indicador rotulo="Leitos internação" valor={totais.internacao} />
           <Indicador rotulo="Leitos UTI" valor={totais.uti} />
@@ -473,11 +484,12 @@ function CadastroPage() {
 
 
         <Tabs defaultValue="emergencia">
-          <TabsList>
-            <TabsTrigger value="emergencia">1. Setor de Emergência</TabsTrigger>
-            <TabsTrigger value="internacao">2. Setor de Internação</TabsTrigger>
-            <TabsTrigger value="criticos">3. Setor UTI e UCI</TabsTrigger>
+          <TabsList className="h-auto w-full flex-col gap-1 p-1 sm:w-auto sm:flex-row">
+            <TabsTrigger value="emergencia" className="data-[state=active]:bg-aghuse-green data-[state=active]:text-primary-foreground">1. Setor de Emergência</TabsTrigger>
+            <TabsTrigger value="internacao" className="data-[state=active]:bg-aghuse-green data-[state=active]:text-primary-foreground">2. Setor de Internação</TabsTrigger>
+            <TabsTrigger value="criticos" className="data-[state=active]:bg-aghuse-green data-[state=active]:text-primary-foreground">3. Setor UTI e UCI</TabsTrigger>
           </TabsList>
+
 
 
           {/* ---------------- Emergência ---------------- */}
@@ -509,7 +521,7 @@ function CadastroPage() {
                     />
                   </div>
                   <div className="flex items-end">
-                    <Button onClick={addEspecialidade}>Adicionar</Button>
+                    <Button className="w-full bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep sm:w-auto" onClick={addEspecialidade}>Adicionar</Button>
                   </div>
                 </div>
 
@@ -612,7 +624,7 @@ function CadastroPage() {
                     />
                   </div>
                   <div className="flex items-end">
-                    <Button onClick={addArea}>Adicionar</Button>
+                    <Button className="w-full bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep sm:w-auto" onClick={addArea}>Adicionar</Button>
                   </div>
                 </div>
 
@@ -747,7 +759,7 @@ function CadastroPage() {
                     />
                   </div>
                   <div className="flex items-end">
-                    <Button onClick={addSetor}>Adicionar</Button>
+                    <Button className="w-full bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep sm:w-auto" onClick={addSetor}>Adicionar</Button>
                   </div>
                 </div>
 
@@ -902,7 +914,7 @@ function CadastroPage() {
                     />
                   </div>
                   <div className="flex items-end">
-                    <Button onClick={addUnidadeCritica}>Adicionar</Button>
+                    <Button className="w-full bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep sm:w-auto" onClick={addUnidadeCritica}>Adicionar</Button>
                   </div>
                 </div>
 
