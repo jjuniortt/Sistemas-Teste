@@ -306,7 +306,6 @@ function Login() {
               src={logosRodape.url}
               alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
               className="h-24 w-full max-w-lg object-contain sm:h-28"
-              loading="lazy"
             />
           </div>
 
