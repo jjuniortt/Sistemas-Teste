@@ -167,28 +167,28 @@ function Login() {
 
 
 
-      <section className="flex items-center justify-center px-4 py-4 sm:px-6 sm:py-6">
-        <div className="w-full max-w-sm space-y-3">
+      <section className="flex items-center justify-center px-4 py-3 sm:px-6 sm:py-5">
+        <div className="w-full max-w-sm space-y-2">
 
           <div className="flex justify-center">
             <img
               src={logoAghUse.url}
               alt="AGHUse — Secretaria de Estado da Saúde, Governo da Paraíba"
-              className="h-16 w-auto"
+              className="h-14 w-auto"
             />
           </div>
           <header className="text-center">
-            <h2 className="text-2xl font-semibold">Sistema de Cadastro</h2>
-            <p className="text-sm text-muted-foreground">
+            <h2 className="text-xl font-semibold">Sistema de Cadastro</h2>
+            <p className="text-xs text-muted-foreground">
               Entre com sua conta para realizar o cadastro ou carregar sua parametrização salva.
             </p>
           </header>
 
 
-          <div className="space-y-2">
-            <Label htmlFor="empresa">Empresa (hospital) *</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="empresa" className="text-sm">Empresa (hospital) *</Label>
             <Select value={empresa || undefined} onValueChange={(v) => setEmpresa(v as EmpresaCodigo)}>
-              <SelectTrigger id="empresa">
+              <SelectTrigger id="empresa" className="h-9">
                 <SelectValue placeholder="Selecione o hospital" />
               </SelectTrigger>
               <SelectContent>
@@ -199,25 +199,25 @@ function Login() {
                 ))}
               </SelectContent>
             </Select>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[11px] text-muted-foreground">
               Os dados cadastrados ficam isolados por hospital.
             </p>
           </div>
 
           <Tabs defaultValue="entrar">
-            <TabsList className="w-full">
-              <TabsTrigger value="entrar" className="flex-1">
+            <TabsList className="w-full h-9">
+              <TabsTrigger value="entrar" className="flex-1 text-sm">
                 Entrar
               </TabsTrigger>
-              <TabsTrigger value="criar" className="flex-1">
+              <TabsTrigger value="criar" className="flex-1 text-sm">
                 Criar conta
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="entrar">
-              <form onSubmit={entrar} className="space-y-2 pt-2">
-                <div className="space-y-2">
-                  <Label htmlFor="email">E-mail</Label>
+              <form onSubmit={entrar} className="space-y-1.5 pt-1.5">
+                <div className="space-y-1">
+                  <Label htmlFor="email" className="text-sm">E-mail</Label>
                   <Input
                     id="email"
                     type="email"
@@ -225,10 +225,11 @@ function Login() {
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="h-9"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="senha">Senha</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="senha" className="text-sm">Senha</Label>
                   <Input
                     id="senha"
                     type="password"
@@ -236,6 +237,7 @@ function Login() {
                     autoComplete="current-password"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
+                    className="h-9"
                   />
                 </div>
                 <Button
@@ -249,18 +251,19 @@ function Login() {
             </TabsContent>
 
             <TabsContent value="criar">
-              <form onSubmit={cadastrar} className="space-y-2 pt-2">
-                <div className="space-y-2">
-                  <Label htmlFor="nome">Nome</Label>
+              <form onSubmit={cadastrar} className="space-y-1.5 pt-1.5">
+                <div className="space-y-1">
+                  <Label htmlFor="nome" className="text-sm">Nome</Label>
                   <Input
                     id="nome"
                     value={nome}
                     autoComplete="name"
                     onChange={(e) => setNome(e.target.value)}
+                    className="h-9"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email-novo">E-mail</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="email-novo" className="text-sm">E-mail</Label>
                   <Input
                     id="email-novo"
                     type="email"
@@ -268,10 +271,11 @@ function Login() {
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="h-9"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="senha-nova">Senha</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="senha-nova" className="text-sm">Senha</Label>
                   <Input
                     id="senha-nova"
                     type="password"
@@ -279,6 +283,7 @@ function Login() {
                     autoComplete="new-password"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
+                    className="h-9"
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={enviando}>
@@ -305,7 +310,7 @@ function Login() {
             <img
               src={logosRodape.url}
               alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
-              className="h-24 w-full max-w-lg object-contain sm:h-28"
+              className="h-20 w-full max-w-lg object-contain sm:h-24"
             />
           </div>
 
