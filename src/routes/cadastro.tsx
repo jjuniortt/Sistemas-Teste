@@ -415,27 +415,33 @@ function CadastroPage() {
     <div className="min-h-screen overflow-x-hidden bg-background">
 
       <header className="border-b bg-card">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between">
 
-          <div>
-            <h1 className="text-lg font-semibold">Cadastro da Estrutura Assistencial</h1>
-            <p className="text-sm text-muted-foreground">
+          <div className="min-w-0">
+            <h1 className="text-base font-semibold sm:text-lg">Cadastro da Estrutura Assistencial</h1>
+            <p className="truncate text-sm text-muted-foreground">
               {nomeEmpresa(empresa)}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="truncate text-xs text-muted-foreground">
               {user.email} — emergência, internação, UTI e UCI
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
 
-            <Button variant="outline" onClick={() => exportarCSV(dados)}>
+            <Button
+              className="bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep"
+              onClick={() => exportarCSV(dados)}
+            >
               Exportar CSV
             </Button>
-            <Button variant="outline" onClick={() => exportarJSON(dados)}>
+            <Button
+              className="bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep"
+              onClick={() => exportarJSON(dados)}
+            >
               Exportar JSON
             </Button>
             <Button
-              variant="outline"
+              className="bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep"
               onClick={() => {
                 if (!exportarPDF(dados, `${nomeEmpresa(empresa)} — ${user.email ?? ""}`))
                   toast.error("Permita pop-ups para visualizar o PDF.");
@@ -443,13 +449,17 @@ function CadastroPage() {
             >
               Exportar PDF
             </Button>
-            <Button variant="outline" onClick={sair}>
-
+            <Button
+              variant="outline"
+              className="border-destructive/40 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+              onClick={sair}
+            >
               Sair
             </Button>
           </div>
         </div>
       </header>
+
 
       {carregandoDados && (
         <p className="mx-auto max-w-6xl px-6 pt-6 text-sm text-muted-foreground">
