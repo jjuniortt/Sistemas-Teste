@@ -301,14 +301,15 @@ function Login() {
             Continuar com Google
           </Button>
 
-          <div className="flex justify-center pt-6">
+          <div className="flex justify-center pt-8">
             <img
               src={logosRodape.url}
               alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
-              className="h-12 w-full max-w-md object-contain"
+              className="h-16 w-full max-w-lg object-contain sm:h-20"
               loading="lazy"
             />
           </div>
+
         </div>
       </section>
     </main>
