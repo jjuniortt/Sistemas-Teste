@@ -467,13 +467,13 @@ function CadastroPage() {
         </p>
       )}
 
-      <main className="mx-auto w-full max-w-6xl space-y-8 overflow-x-hidden px-6 py-8">
-        <p className="rounded-md border border-border bg-muted/40 p-4 text-center text-sm text-muted-foreground">
+      <main className="mx-auto w-full max-w-6xl space-y-8 overflow-x-hidden px-4 py-8 sm:px-6">
+        <p className="rounded-md border border-aghuse-green/30 bg-aghuse-green/5 p-4 text-center text-sm text-muted-foreground">
           Observação: todo o formulário precisa ser preenchido corretamente a partir dos campos
           solicitados nos setores (Setor de Emergência, Setor de Internação e Setor UTI e UCI).
         </p>
 
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <section className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           <Indicador rotulo="Leitos emergência" valor={totais.emergencia} />
           <Indicador rotulo="Leitos internação" valor={totais.internacao} />
           <Indicador rotulo="Leitos UTI" valor={totais.uti} />
@@ -483,11 +483,12 @@ function CadastroPage() {
 
 
         <Tabs defaultValue="emergencia">
-          <TabsList>
-            <TabsTrigger value="emergencia">1. Setor de Emergência</TabsTrigger>
-            <TabsTrigger value="internacao">2. Setor de Internação</TabsTrigger>
-            <TabsTrigger value="criticos">3. Setor UTI e UCI</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-1 gap-1 sm:w-auto sm:grid-cols-3">
+            <TabsTrigger value="emergencia" className="data-[state=active]:bg-aghuse-green data-[state=active]:text-primary-foreground">1. Setor de Emergência</TabsTrigger>
+            <TabsTrigger value="internacao" className="data-[state=active]:bg-aghuse-green data-[state=active]:text-primary-foreground">2. Setor de Internação</TabsTrigger>
+            <TabsTrigger value="criticos" className="data-[state=active]:bg-aghuse-green data-[state=active]:text-primary-foreground">3. Setor UTI e UCI</TabsTrigger>
           </TabsList>
+
 
 
           {/* ---------------- Emergência ---------------- */}
