@@ -129,7 +129,7 @@ function Login() {
 
 
   return (
-    <main className="grid min-h-screen lg:grid-cols-2">
+    <main className="grid h-screen overflow-hidden lg:grid-cols-2">
       <section className="relative hidden flex-col overflow-hidden bg-aghuse-green text-primary-foreground lg:flex">
         <div
           aria-hidden
@@ -141,14 +141,14 @@ function Login() {
           }}
         />
 
-        <div className="relative flex flex-1 flex-col justify-center px-8 py-20 xl:px-14">
+        <div className="relative flex flex-1 flex-col justify-center px-6 py-10 xl:px-10">
           <p className="font-bold tracking-[0.2em] uppercase opacity-90 whitespace-pre-line">
             <span className="text-base">PARAMETRIZAÇÃO ASSISTENCIAL</span>
             {"\n"}
             <span className="text-xs">GERENCIA DE TECNOLOGIA DA INFORMAÇÃO (GTI)</span>
           </p>
-          <div className="mt-12 space-y-6">
-            <h1 className="text-4xl font-semibold leading-[1.15] xl:text-5xl">
+          <div className="mt-6 space-y-4">
+            <h1 className="text-3xl font-semibold leading-[1.15] xl:text-4xl">
               Estrutura física e fluxo assistencial em um único cadastro
             </h1>
             <div className="flex flex-wrap gap-3 text-sm font-medium">
@@ -167,17 +167,17 @@ function Login() {
 
 
 
-      <section className="flex items-center justify-center px-4 py-14 sm:px-8 sm:py-20">
-        <div className="w-full max-w-sm space-y-6">
+      <section className="flex items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
+        <div className="w-full max-w-sm space-y-4">
 
           <div className="flex justify-center">
             <img
               src={logoAghUse.url}
               alt="AGHUse — Secretaria de Estado da Saúde, Governo da Paraíba"
-              className="h-28 w-auto"
+              className="h-20 w-auto"
             />
           </div>
-          <header className="space-y-2 text-center">
+          <header className="space-y-1 text-center">
             <h2 className="text-2xl font-semibold">Sistema de Cadastro</h2>
             <p className="text-sm text-muted-foreground">
               Entre com sua conta para realizar o cadastro ou carregar sua parametrização salva.
@@ -215,7 +215,7 @@ function Login() {
             </TabsList>
 
             <TabsContent value="entrar">
-              <form onSubmit={entrar} className="space-y-4 pt-4">
+              <form onSubmit={entrar} className="space-y-3 pt-3">
                 <div className="space-y-2">
                   <Label htmlFor="email">E-mail</Label>
                   <Input
@@ -249,7 +249,7 @@ function Login() {
             </TabsContent>
 
             <TabsContent value="criar">
-              <form onSubmit={cadastrar} className="space-y-4 pt-4">
+              <form onSubmit={cadastrar} className="space-y-3 pt-3">
                 <div className="space-y-2">
                   <Label htmlFor="nome">Nome</Label>
                   <Input
@@ -301,11 +301,11 @@ function Login() {
             Continuar com Google
           </Button>
 
-          <div className="flex justify-center pt-8">
+          <div className="flex justify-center pt-4">
             <img
               src={logosRodape.url}
               alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
-              className="h-16 w-full max-w-lg object-contain sm:h-20"
+              className="h-20 w-full max-w-lg object-contain sm:h-24"
               loading="lazy"
             />
           </div>

@@ -232,6 +232,7 @@ function CadastroPage() {
   const sair = useCallback(async () => {
     limparEmpresaAtiva();
     await supabase.auth.signOut();
+    toast.success("Usuário Deslogado Com Sucesso!");
     navigate({ to: "/" });
   }, [navigate]);
 
