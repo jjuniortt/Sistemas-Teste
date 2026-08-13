@@ -193,28 +193,32 @@
 }
 
 @utility login-logo-top {
-  height: 7rem;
+  height: 8rem;
   @media (min-width: 640px) {
-    height: 8rem;
+    height: 9rem;
   }
   @media (max-height: 700px) {
-    height: 4rem;
+    height: 5rem;
   }
   @media (min-height: 701px) and (max-height: 800px) {
-    height: 5rem;
+    height: 6rem;
   }
 }
 
 @utility login-logo-bottom {
-  height: 11rem;
+  width: min(30rem, calc(100vw - 2rem));
+  height: 13rem;
+  max-width: none;
   @media (min-width: 640px) {
-    height: 13rem;
+    height: 15rem;
   }
   @media (max-height: 700px) {
-    height: 7rem;
+    width: min(27rem, calc(50vw - 2rem));
+    height: 8rem;
   }
   @media (min-height: 701px) and (max-height: 800px) {
-    height: 9.5rem;
+    width: min(29rem, calc(50vw - 2rem));
+    height: 11rem;
   }
 }
 
