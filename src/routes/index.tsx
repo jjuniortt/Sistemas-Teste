@@ -64,7 +64,11 @@ function Login() {
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [enviando, setEnviando] = useState(false);
-  const [empresa, setEmpresa] = useState<EmpresaCodigo | "">(() => obterEmpresaAtiva() ?? "");
+  const [empresa, setEmpresa] = useState<EmpresaCodigo | "">("");
+
+  useEffect(() => {
+    setEmpresa(obterEmpresaAtiva() ?? "");
+  }, []);
 
   const validarEmpresa = () => {
     if (!empresa) {
@@ -87,8 +91,10 @@ function Login() {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: senha });
     setEnviando(false);
     if (error) return toast.error("Não foi possível entrar: " + error.message);
+    toast.success("Usuário Logado Com Sucesso!");
     irParaDestino();
   };
+
 
   const cadastrar = async (e: React.FormEvent) => {
     e.preventDefault();
