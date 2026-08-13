@@ -192,3 +192,73 @@
   }
 }
 
+@utility login-logo-top {
+  height: 6rem;
+  @media (min-width: 640px) {
+    height: 7rem;
+  }
+  @media (max-height: 700px) {
+    height: 3rem;
+  }
+  @media (min-height: 701px) and (max-height: 800px) {
+    height: 4rem;
+  }
+}
+
+@utility login-logo-bottom {
+  height: 9rem;
+  @media (min-width: 640px) {
+    height: 11rem;
+  }
+  @media (max-height: 700px) {
+    height: 5.5rem;
+  }
+  @media (min-height: 701px) and (max-height: 800px) {
+    height: 6.5rem;
+  }
+}
+
+@utility login-input {
+  height: 2.25rem;
+  min-height: 2.25rem;
+}
+
+@utility login-title {
+  font-size: 1.25rem;
+  line-height: 1.35;
+  @media (max-height: 700px) {
+    font-size: 1.125rem;
+  }
+}
+
+@utility login-desc {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  @media (max-height: 700px) {
+    font-size: 0.75rem;
+  }
+}
+
+@utility login-gap {
+  gap: 0.75rem;
+  @media (max-height: 700px) {
+    gap: 0.25rem;
+  }
+  @media (min-height: 701px) and (max-height: 800px) {
+    gap: 0.5rem;
+  }
+}
+
+@utility login-py {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+  @media (max-height: 700px) {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  @media (min-height: 701px) and (max-height: 800px) {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
