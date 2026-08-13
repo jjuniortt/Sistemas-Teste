@@ -167,14 +167,14 @@ function Login() {
 
 
 
-      <section className="flex items-center justify-center px-4 py-3 sm:px-6 sm:py-5">
-        <div className="w-full max-w-sm space-y-2">
+      <section className="flex items-center justify-center px-4 py-8 sm:px-6 sm:py-10">
+        <div className="w-full max-w-sm space-y-3">
 
           <div className="flex justify-center">
             <img
               src={logoAghUse.url}
               alt="AGHUse — Secretaria de Estado da Saúde, Governo da Paraíba"
-              className="h-14 w-auto"
+              className="h-20 w-auto sm:h-24"
             />
           </div>
           <header className="text-center">
@@ -306,11 +306,11 @@ function Login() {
             Continuar com Google
           </Button>
 
-          <div className="flex justify-center pt-2">
+          <div className="flex justify-center pt-1">
             <img
               src={logosRodape.url}
               alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
-              className="h-24 w-full max-w-lg object-contain sm:h-32"
+              className="h-28 w-full max-w-lg object-contain sm:h-36"
             />
           </div>
 
