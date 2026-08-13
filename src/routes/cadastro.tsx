@@ -483,7 +483,7 @@ function CadastroPage() {
 
 
         <Tabs defaultValue="emergencia">
-          <TabsList className="grid w-full grid-cols-1 gap-1 sm:w-auto sm:grid-cols-3">
+          <TabsList className="h-auto w-full flex-col gap-1 p-1 sm:w-auto sm:flex-row">
             <TabsTrigger value="emergencia" className="data-[state=active]:bg-aghuse-green data-[state=active]:text-primary-foreground">1. Setor de Emergência</TabsTrigger>
             <TabsTrigger value="internacao" className="data-[state=active]:bg-aghuse-green data-[state=active]:text-primary-foreground">2. Setor de Internação</TabsTrigger>
             <TabsTrigger value="criticos" className="data-[state=active]:bg-aghuse-green data-[state=active]:text-primary-foreground">3. Setor UTI e UCI</TabsTrigger>
