@@ -521,7 +521,7 @@ function CadastroPage() {
                     />
                   </div>
                   <div className="flex items-end">
-                    <Button onClick={addEspecialidade}>Adicionar</Button>
+                    <Button className="w-full bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep sm:w-auto" onClick={addEspecialidade}>Adicionar</Button>
                   </div>
                 </div>
 
@@ -624,7 +624,7 @@ function CadastroPage() {
                     />
                   </div>
                   <div className="flex items-end">
-                    <Button onClick={addArea}>Adicionar</Button>
+                    <Button className="w-full bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep sm:w-auto" onClick={addArea}>Adicionar</Button>
                   </div>
                 </div>
 
@@ -759,7 +759,7 @@ function CadastroPage() {
                     />
                   </div>
                   <div className="flex items-end">
-                    <Button onClick={addSetor}>Adicionar</Button>
+                    <Button className="w-full bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep sm:w-auto" onClick={addSetor}>Adicionar</Button>
                   </div>
                 </div>
 
@@ -914,7 +914,7 @@ function CadastroPage() {
                     />
                   </div>
                   <div className="flex items-end">
-                    <Button onClick={addUnidadeCritica}>Adicionar</Button>
+                    <Button className="w-full bg-aghuse-green text-primary-foreground hover:bg-aghuse-green-deep sm:w-auto" onClick={addUnidadeCritica}>Adicionar</Button>
                   </div>
                 </div>
 
