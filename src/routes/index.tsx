@@ -306,11 +306,11 @@ function Login() {
             Continuar com Google
           </Button>
 
-          <div className="flex justify-center pt-1">
+          <div className="flex justify-center -mt-1">
             <img
               src={logosRodape.url}
               alt="AGHUse, Conecta SUS PB, ESP, Secretaria de Estado da Saúde e Governo da Paraíba"
-              className="h-28 w-full max-w-lg object-contain sm:h-36"
+              className="h-32 w-full max-w-lg object-contain sm:h-40"
             />
           </div>
 
