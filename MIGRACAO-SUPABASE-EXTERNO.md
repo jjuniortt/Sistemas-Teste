@@ -122,3 +122,30 @@ seus registros.
   rode os mesmos dois scripts e valide login + CRUD.
 - **Rollback**: mantenha o Lovable Cloud ativo até a validação completa no novo
   ambiente; a troca é só uma mudança de variáveis de ambiente.
+
+---
+
+## Passo 8 — Arquivos e imagens
+
+Este projeto **não usa Storage** (não há buckets no backend atual). Todas as
+imagens são estáticas e ficam versionadas no próprio repositório:
+
+- `public/aghuse-logo.png` — logo da tela de login
+- `public/logos-rodape.png` — faixa de logos institucionais
+- `public/favicon.ico`
+
+Como são servidas pelo próprio deploy (Vercel/Lovable), **nada precisa ser
+migrado**: basta manter a pasta `public/` no repositório. Referencie sempre por
+caminho absoluto (`/aghuse-logo.png`), nunca por URL do Lovable.
+
+### Se no futuro você usar Storage
+
+1. No projeto novo: **Storage → New bucket** com o mesmo nome e visibilidade
+   (público/privado) do original.
+2. Baixe e reenvie os objetos:
+   ```bash
+   supabase storage cp -r ss://BUCKET ./backup-bucket --experimental   # origem
+   supabase storage cp -r ./backup-bucket ss://BUCKET --experimental   # destino
+   ```
+3. Recrie as policies de `storage.objects` (leitura/escrita por `auth.uid()`).
+4. Atualize no código qualquer URL fixa que contenha o ref antigo do projeto.
