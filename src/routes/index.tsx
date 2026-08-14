@@ -15,8 +15,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import logoAghUse from "@/assets/aghuse2-2-2.png.asset.json";
-import logosRodape from "@/assets/logos-rodape.png.asset.json";
+const logoAghUse = { url: "/aghuse-logo.png" };
+const logosRodape = { url: "/logos-rodape.png" };
 import {
   EMPRESAS,
   definirEmpresaAtiva,
@@ -118,11 +118,22 @@ function Login() {
 
   const entrarComGoogle = async () => {
     if (!validarEmpresa()) return;
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + (next ?? ""),
-    });
-    if (result.error) return toast.error("Falha no login com Google.");
-    if (result.redirected) return;
+    const redirectTo = window.location.origin + (next ?? "");
+    const host = window.location.hostname;
+    const noLovable = host.endsWith("lovable.app") || host.endsWith("lovableproject.com") || host === "localhost";
+
+    if (noLovable) {
+      const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: redirectTo });
+      if (result.error) return toast.error("Falha no login com Google.");
+      if (result.redirected) return;
+    } else {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo },
+      });
+      if (error) return toast.error("Falha no login com Google.");
+      return;
+    }
     toast.success("Usuário Logado Com Sucesso!");
     irParaDestino();
   };
