@@ -67,16 +67,82 @@ psql "postgresql://postgres:SENHA@db.SEU_REF.supabase.co:5432/postgres" \
 
 Os perfis são criados automaticamente pelo trigger `on_auth_user_created`.
 
-## Passo 5 — Configurar Auth
+## Passo 5 — Configurar Auth (campo a campo)
 
-1. **Authentication → URL Configuration**
-   - Site URL: `https://seu-dominio.vercel.app`
-   - Redirect URLs: `https://seu-dominio.vercel.app/**`, `http://localhost:8080/**`
-2. **Authentication → Providers → Google**: ative e informe Client ID/Secret do
-   Google Cloud Console, cujo *Authorized redirect URI* deve ser
+### 5.1 URL Configuration
+**Authentication → URL Configuration**
+
+| Campo | Valor |
+|---|---|
+| Site URL | `https://seu-dominio.vercel.app` (sem barra no final) |
+| Redirect URLs | `https://seu-dominio.vercel.app/**` |
+| Redirect URLs (adicionar) | `https://*-seu-projeto.vercel.app/**` (previews da Vercel) |
+| Redirect URLs (adicionar) | `http://localhost:8080/**` (desenvolvimento) |
+
+Clique em **Add URL** para cada linha e depois em **Save changes**.
+
+### 5.2 Provider Email
+**Authentication → Providers → Email**
+
+| Campo | Valor recomendado |
+|---|---|
+| Enable Email provider | ativado |
+| Confirm email | ativado (desative só se quiser login imediato após cadastro) |
+| Secure email change | ativado |
+| Minimum password length | `8` |
+| Prevent use of leaked passwords | ativado |
+
+**Authentication → Providers → Anonymous Sign-Ins**: **desativado**.
+
+### 5.3 Provider Google — parte A: Google Cloud Console
+1. `console.cloud.google.com` → crie/selecione um projeto.
+2. **APIs & Services → OAuth consent screen**
+   - User type: **External** → Create
+   - App name: `AGHUse — Estrutura Assistencial`
+   - User support email / Developer contact: seu e-mail
+   - **Authorized domains**: `supabase.co` e `vercel.app` (e seu domínio próprio, se houver)
+   - **Scopes** → Add or remove scopes → marque:
+     `.../auth/userinfo.email`, `.../auth/userinfo.profile`, `openid`
+   - Salve e (opcional) **Publish app** para sair do modo de teste.
+3. **APIs & Services → Credentials → Create credentials → OAuth client ID**
+   - Application type: **Web application**
+   - Name: `AGHUse Web`
+   - **Authorized JavaScript origins**:
+     `https://seu-dominio.vercel.app` e `http://localhost:8080`
+   - **Authorized redirect URIs** (exatamente este):
+     `https://SEU_REF.supabase.co/auth/v1/callback`
+   - Create → copie **Client ID** e **Client Secret**.
+
+### 5.4 Provider Google — parte B: Supabase
+**Authentication → Providers → Google**
+
+| Campo | Valor |
+|---|---|
+| Enable Sign in with Google | ativado |
+| Client IDs | cole o Client ID do Google |
+| Client Secret (for OAuth) | cole o Client Secret |
+| Skip nonce check | desativado |
+| Callback URL (for OAuth) | apenas copie — é o valor que já foi colado no Google |
+
+Clique em **Save**.
+
+### 5.5 Ajuste no código (importante fora do Lovable)
+Em `src/routes/index.tsx` o login Google é híbrido: em `.lovable.app`/`localhost`
+usa o broker do Lovable; em qualquer outro domínio usa
+`supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } })`,
+que é justamente o fluxo configurado acima. Nada precisa ser alterado — só
+garanta que o domínio da Vercel esteja nas **Redirect URLs** (5.1).
+
+### 5.6 Validação
+1. Abra `https://seu-dominio.vercel.app`, clique em **Entrar com Google**.
+2. Erro `redirect_uri_mismatch` → o redirect URI no Google não é exatamente
    `https://SEU_REF.supabase.co/auth/v1/callback`.
-3. **Providers → Email**: mantenha "Confirm email" conforme sua política; desative
-   cadastros anônimos.
+3. Erro `Unsupported provider` → o provider Google não foi salvo como ativo (5.4).
+4. Login funciona mas volta para a tela de login → a URL de retorno não está nas
+   **Redirect URLs** (5.1).
+5. Confira em **Authentication → Users** se o usuário foi criado e em
+   **Table Editor → profiles** se o perfil foi gerado pelo trigger.
+
 
 ## Passo 6 — Apontar a aplicação para o novo banco
 
