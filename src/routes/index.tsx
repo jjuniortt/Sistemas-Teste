@@ -119,11 +119,22 @@ function Login() {
   const entrarComGoogle = async () => {
     if (!validarEmpresa()) return;
     const redirectTo = window.location.origin + (next ?? "");
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: redirectTo });
-    if (result.error) return toast.error("Falha no login com Google.");
-    if (result.redirected) return;
-    toast.success("Usuário Logado Com Sucesso!");
-    irParaDestino();
+    const origin = window.location.origin;
+    const isLovable = origin.includes(".lovable.app") || origin.includes("localhost") || origin.includes("127.0.0.1");
+
+    if (isLovable) {
+      const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: redirectTo });
+      if (result.error) return toast.error("Falha no login com Google.");
+      if (result.redirected) return;
+      toast.success("Usuário Logado Com Sucesso!");
+      return irParaDestino();
+    }
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo },
+    });
+    if (error) return toast.error("Falha no login com Google: " + error.message);
   };
 
 
