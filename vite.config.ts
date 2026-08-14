@@ -7,12 +7,16 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
 
+// Na Vercel (VERCEL=1) o build usa o preset "vercel"; fora dela mantém o padrão do Lovable.
+const preset = process.env.NITRO_PRESET ?? (process.env.VERCEL ? "vercel" : undefined);
+
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  ...(preset ? { nitro: { preset } } : {}),
   vite: {
     plugins: [mcpPlugin()],
   },
