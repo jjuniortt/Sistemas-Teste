@@ -1,20 +1,21 @@
 # Deploy na Vercel com Supabase próprio
 
-## 1. Variáveis de ambiente (Vercel > Settings > Environment Variables)
+## 1. Variáveis de ambiente
 
-Copie os nomes de `.env.example` e preencha com os dados do seu projeto Supabase
-(Project Settings > API):
+As variáveis públicas necessárias para conectar este aplicativo ao backend já
+estão definidas em `vercel.json` e serão aplicadas automaticamente pela Vercel:
 
 - `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_PROJECT_ID`
 - `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_PROJECT_ID`
 
-Aplique em Production, Preview e Development. Depois faça **Redeploy** — variáveis
-`VITE_*` são inseridas no bundle em tempo de build.
+Não é necessário adicionar uma chave administrativa: o aplicativo usa a sessão
+do usuário e as regras de isolamento de dados do banco.
 
 ## 2. Build
 
-- Framework preset: **Other** (ou Vite)
-- Build command: `npm run build`
+- Framework preset: **Other**
+- Build command: `bun run build`
+- Install command: `bun install`
 - Output: gerado pelo Nitro com preset `vercel` (detectado automaticamente pela
   variável `VERCEL` que a plataforma define). Para forçar: `NITRO_PRESET=vercel`.
 
@@ -36,9 +37,12 @@ versionadas no repositório (não dependem mais do CDN do Lovable).
 
 ## 5. Banco de dados
 
-Aplique as migrações de `supabase/migrations` no seu projeto:
+O backend conectado já contém as tabelas, regras de acesso e migrações deste
+repositório. Os arquivos em `supabase/migrations` permanecem versionados para
+recuperação e auditoria.
 
 ```bash
+# Apenas para restaurar em outro projeto de banco:
 supabase link --project-ref SEU-PROJETO
 supabase db push
 ```
