@@ -21,14 +21,10 @@ do usuário e as regras de isolamento de dados do banco.
 
 ## 3. Autenticação
 
-- Supabase > Authentication > URL Configuration:
-  - Site URL: `https://SEU-APP.vercel.app`
-  - Redirect URLs: `https://SEU-APP.vercel.app/**`
-- Google: habilite o provider em Supabase > Authentication > Providers > Google
-  com Client ID/Secret do Google Cloud, e adicione
-  `https://SEU-PROJETO.supabase.co/auth/v1/callback` como Authorized redirect URI.
-  Fora do Lovable o app usa o OAuth nativo do Supabase (o broker do Lovable só é
-  usado no preview do Lovable).
+- E-mail/senha e Google já estão habilitados no backend.
+- O login Google usa o provedor gerenciado e envia como retorno a origem atual
+  (`window.location.origin`), funcionando tanto no preview quanto na Vercel.
+- Não é necessário criar ou copiar Client ID/Secret do Google.
 
 ## 4. Imagens
 
