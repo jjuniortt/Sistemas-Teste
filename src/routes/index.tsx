@@ -120,9 +120,9 @@ function Login() {
     if (!validarEmpresa()) return;
     const redirectTo = window.location.origin + (next ?? "");
     const host = window.location.hostname;
-    const noLovable = host.endsWith("lovable.app") || host.endsWith("lovableproject.com") || host === "localhost";
+    const emLovable = host.endsWith("lovable.app") || host.endsWith("lovableproject.com") || host === "localhost";
 
-    if (noLovable) {
+    if (emLovable) {
       const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: redirectTo });
       if (result.error) return toast.error("Falha no login com Google.");
       if (result.redirected) return;
